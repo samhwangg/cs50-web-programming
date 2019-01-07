@@ -25,7 +25,6 @@ db = scoped_session(sessionmaker(bind=engine))
 def index():
 	if request.method == "POST":
 		session.pop('username', None)
-		session.pop('password', None)
 	return render_template("index.html")
 
 
@@ -48,6 +47,5 @@ def login():
 @app.route("/search")
 def search():
 	username = session["username"]
-	password = session["password"]
-	return render_template("search.html",username=username, password=password)
+	return render_template("search.html",username=username)
 		
