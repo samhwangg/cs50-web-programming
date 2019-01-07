@@ -7,5 +7,16 @@
 {% block body %}
 	<h1>Book Finder</h1>
 	<br>
-	<p>Click <a href="{{ url_for('login') }}">Log In</a> to log in.</p>
+	<h2>Register Here</h2>
+	<form action="{{ url_for('index') }}" method = "post">
+    	Username: <br>
+    	<input type="text" name="username"><br>
+    	Password: <br>
+    	<input type="password" name="password"><br>
+    	<br>
+    	Input Password Again: <br>
+    	<input type="password" name="password2"><br>
+    	<input type="submit" value="Submit">
+    </form>
+	<p>Click <a href="{{ url_for('login') }}">here</a> to log in.</p>
 {% endblock %}

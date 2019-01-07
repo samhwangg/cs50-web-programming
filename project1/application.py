@@ -23,8 +23,17 @@ db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/", methods = ["GET", "POST"])
 def index():
+	
 	if request.method == "POST":
-		session.pop('username', None)
+		if 'username' in session:
+			session.pop('username',None)
+		elif request.form.get("password") == request.form.get("password2"):
+			username = request.form.get("username")
+			password = request.form.get("password")
+			db.execute("INSERT INTO users (username, password) VALUES (:username, :password)", {"username": username, "password": password})
+			db.commit()
+			session["username"] = username
+			return redirect(url_for('search'))
 	return render_template("index.html")
 
 
