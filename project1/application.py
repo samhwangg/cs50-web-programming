@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, session, render_template, request, redirect, url_for
 from flask_session import Session
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 app = Flask(__name__)
@@ -23,19 +23,29 @@ db = scoped_session(sessionmaker(bind=engine))
 
 @app.route("/", methods = ["GET", "POST"])
 def index():
-	
+	# TODO: implement a safer logout method
 	if request.method == "POST":
 		if 'username' in session:
 			session.pop('username',None)
-		elif request.form.get("password") == request.form.get("password2"):
-			username = request.form.get("username")
-			password = request.form.get("password")
-			db.execute("INSERT INTO users (username, password) VALUES (:username, :password)", {"username": username, "password": password})
-			db.commit()
-			session["username"] = username
-			return redirect(url_for('search'))
 	return render_template("index.html")
 
+@app.route("/register", methods = ["GET", "POST"])
+def register():
+	errorMessage = ""
+	if request.method == "POST":
+		if request.form.get("password") == request.form.get("password2"):
+			# TODO: implement password check in client side as well for quick feedback
+			username = request.form.get("username")
+			password = request.form.get("password")
+			try:
+				db.execute("INSERT INTO users (username, password) VALUES (:username, :password)", {"username": username, "password": password})
+				db.commit()
+				session["username"] = username
+				return redirect(url_for('search'))
+			except exc.IntegrityError:
+				db.rollback()
+				errorMessage = "Username already taken"
+	return render_template("register.html", errorMessage=errorMessage)
 
 @app.route("/login", methods = ["GET", "POST"])
 def login():
@@ -55,6 +65,5 @@ def login():
 
 @app.route("/search")
 def search():
-	username = session["username"]
-	return render_template("search.html",username=username)
+	return render_template("search.html")
 		

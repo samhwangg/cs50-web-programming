@@ -1,22 +1,25 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Book Finder
+    Bootleg Goodreads
 {% endblock %}
 
 {% block body %}
-	<h1>Book Finder</h1>
+	<h1 style="color:black;"><a href="{{ url_for('index' ) }}">Bootleg Goodreads</a></h1>
 	<br>
-	<h2>Register Here</h2>
-	<form action="{{ url_for('index') }}" method = "post">
-    	Username: <br>
-    	<input type="text" name="username"><br>
-    	Password: <br>
-    	<input type="password" name="password"><br>
-    	<br>
-    	Input Password Again: <br>
-    	<input type="password" name="password2"><br>
-    	<input type="submit" value="Submit">
-    </form>
-	<p>Click <a href="{{ url_for('login') }}">here</a> to log in.</p>
+	{% if session['username'] %}
+		<form action="{{ url_for('index') }}" method = "post">
+			<input type="submit" name = "logout" value = "Log Out"/>
+		</form>
+	{% else %}
+    	<p>New User? <a href="{{ url_for('register') }}">Click here to register!</a></p>
+		<p>Already have an account? <a href="{{ url_for('login') }}">Click here to log in.</a></p>
+	{% endif %}
+	<br>
+	<div class="search-bar">
+		<form action="{{ url_for('search') }}">
+			<input type="text" placeholder="Search..." name="search">
+			<button type="submit">Submit</button>
+		</form>
+	</div>
 {% endblock %}
