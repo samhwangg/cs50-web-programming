@@ -11,4 +11,6 @@ src/*.egg-info
 lib
 lib64
 flask_session
-.DS_STORE
+.DS_Store
+**/.DS_Store
+../.DS_Store
