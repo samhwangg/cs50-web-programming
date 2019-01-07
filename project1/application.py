@@ -21,8 +21,11 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 
-@app.route("/")
+@app.route("/", methods = ["GET", "POST"])
 def index():
+	if request.method == "POST":
+		session.pop('username', None)
+		session.pop('password', None)
 	return render_template("index.html")
 
 
@@ -37,7 +40,6 @@ def login():
 		if db.execute("SELECT * FROM users WHERE username = :username AND password = :password", {"username": username, "password": password}).rowcount == 1:
 			# existing/correct username is stored in the session
 			session["username"] = username
-			session["password"] = password
 			return redirect(url_for('search'))
 		else:
 			errorMessage = "Username or password is incorrect"
