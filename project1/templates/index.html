@@ -1,18 +1,11 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Log In
+    Book Finder
 {% endblock %}
 
 {% block body %}
-    <h1>Create Username & Password</h1>
-
-    <form action="{{ url_for('search') }}" method = "post">
-    	Username: <br>
-    	<input type="text" name="username"><br>
-    	Password: <br>
-    	<input type="text" name="password"><br>
-    	<br>
-    	<input type="submit" value="Submit">
-    </form>
+	<h1>Welcome to Book Finder</h1>
+	<br>
+	<p>Click <a href="{{ url_for('login') }}">here</a> to log in.</p>
 {% endblock %}

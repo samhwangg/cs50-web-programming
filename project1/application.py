@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, session, render_template, request
+from flask import Flask, session, render_template, request, redirect, url_for
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -21,12 +21,31 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 
-@app.route("/", methods = ["GET", "POST"])
+@app.route("/")
 def index():
 	return render_template("index.html")
 
-@app.route("/search", methods = ["POST"])
+
+@app.route("/login", methods = ["GET", "POST"])
+def login():
+	errorMessage = ""
+	if 'username' in session:
+		return redirect(url_for('search'))
+	if request.method == "POST":
+		username = request.form.get("username")
+		password = request.form.get("password")
+		if db.execute("SELECT * FROM users WHERE username = :username AND password = :password", {"username": username, "password": password}).rowcount == 1:
+			# existing/correct username is stored in the session
+			session["username"] = username
+			session["password"] = password
+			return redirect(url_for('search'))
+		else:
+			errorMessage = "Username or password is incorrect"
+	return render_template("login.html", errorMessage=errorMessage)
+
+@app.route("/search")
 def search():
-	username = request.form.get("username")
-	password = request.form.get("password")
-	return render_template("search.html",username=username, password=password);
+	username = session["username"]
+	password = session["password"]
+	return render_template("search.html",username=username, password=password)
+		
