@@ -41,7 +41,7 @@ def register():
 				db.execute("INSERT INTO users (username, password) VALUES (:username, :password)", {"username": username, "password": password})
 				db.commit()
 				session["username"] = username
-				return redirect(url_for('search'))
+				return redirect(url_for('index'))
 			except exc.IntegrityError:
 				db.rollback()
 				errorMessage = "Username already taken"
@@ -51,19 +51,21 @@ def register():
 def login():
 	errorMessage = ""
 	if 'username' in session:
-		return redirect(url_for('search'))
+		return redirect(url_for('index'))
 	if request.method == "POST":
 		username = request.form.get("username")
 		password = request.form.get("password")
 		if db.execute("SELECT * FROM users WHERE username = :username AND password = :password", {"username": username, "password": password}).rowcount == 1:
 			# existing/correct username is stored in the session
 			session["username"] = username
-			return redirect(url_for('search'))
+			return redirect(url_for('index'))
 		else:
 			errorMessage = "Username or password is incorrect"
 	return render_template("login.html", errorMessage=errorMessage)
 
-@app.route("/search")
+@app.route("/search", methods = ["GET", "POST"])
 def search():
-	return render_template("search.html")
+	# TODO: Search databse for searchText
+	searchText = request.form.get("search")
+	return render_template("search.html", searchText=searchText)
 		
