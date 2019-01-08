@@ -20,7 +20,6 @@ Session(app)
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
-
 @app.route("/", methods = ["GET", "POST"])
 def index():
 	# TODO: implement a safer logout method
@@ -38,7 +37,8 @@ def register():
 			username = request.form.get("username")
 			password = request.form.get("password")
 			try:
-				db.execute("INSERT INTO users (username, password) VALUES (:username, :password)", {"username": username, "password": password})
+				db.execute("INSERT INTO users (username, password) VALUES (:username, :password)", 
+					{"username": username, "password": password})
 				db.commit()
 				session["username"] = username
 				return redirect(url_for('index'))
@@ -55,8 +55,10 @@ def login():
 	if request.method == "POST":
 		username = request.form.get("username")
 		password = request.form.get("password")
-		if db.execute("SELECT * FROM users WHERE username = :username AND password = :password", {"username": username, "password": password}).rowcount == 1:
+		if db.execute("SELECT * FROM users WHERE username = :username AND password = :password", 
+			{"username": username, "password": password}).rowcount == 1:
 			# existing/correct username is stored in the session
+			#TODO: return error if incorrect password
 			session["username"] = username
 			return redirect(url_for('index'))
 		else:
@@ -65,7 +67,14 @@ def login():
 
 @app.route("/search", methods = ["GET", "POST"])
 def search():
-	# TODO: Search databse for searchText
+	# TODO: make search request appear in URL
+	#		submit not clickable if search bar is empty
+	#		error paragraph below search bar
+	#		search bar in search route w/ current search info
+	#		search for partial matches
+	#		book url will be ISBN
 	searchText = request.form.get("search")
-	return render_template("search.html", searchText=searchText)
-		
+	searchCategory = request.form.get("searchCategory")
+	bookInfo = db.execute("SELECT isbn, title, author, year FROM books WHERE " + searchCategory + " = :searchText", 
+		{"searchText": searchText})
+	return render_template("search.html", searchText=searchText, bookInfo=bookInfo)

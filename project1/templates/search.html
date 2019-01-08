@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Bootleg Goodreads - Search
+    Bootleg Goodreads - Search Results
 {% endblock %}
 
 {% block body %}
@@ -15,5 +15,20 @@
     	<p>New User? <a href="{{ url_for('register') }}">Click here to register!</a></p>
 		<p>Already have an account? <a href="{{ url_for('login') }}">Click here to log in.</a></p>
 	{% endif %}
-    <h1>You are searching for: {{ searchText }}. Will implement soon!</h1>
+    <h1>You are searching for: {{ searchText }}.</h1>
+
+	<ul>
+    	{% for book in bookInfo %}
+	    	<li>	
+	    		<div>
+	    			ISBN: {{ book.isbn }}<br>
+	    			Book Name: {{ book.title }}<br>
+	    			Author: {{ book.author }}<br>
+	    			Publish Year: {{ book.year }}<br>
+	    		</div>
+	    	</li>
+	   	{% else %}
+	   	<p>No books found.</p>
+	    {% endfor %}
+	</ul>
 {% endblock %}
