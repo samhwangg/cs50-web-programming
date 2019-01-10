@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Bootleg Goodreads
+    Bootleg Goodreads - Book Page
 {% endblock %}
 
 {% block body %}
@@ -11,17 +11,15 @@
 		<form action="{{ url_for('index') }}" method = "post">
 			<input type="submit" name = "logout" value = "Log Out"/>
 		</form>
-	<br>
-	<div class="search-bar">
-		<form action="{{ url_for('search') }}" method = "post" name="searchBar" id="searchBar">
-			<input type="text" placeholder="Search..." name="search" id="search">
-			<button type="submit">Submit</button>
-			<br>
-			<input type="radio" name="searchCategory" id="searchCategory" value="ISBN"> ISBN
-			<input type="radio" name="searchCategory" id="searchCategory" value="Title" checked> Title
-			<input type="radio" name="searchCategory" id="searchCategory" value="Author"> Author
-		</form>
-	</div>
+		<br>
+		{% for book in bookInfo %}
+			<h2>{{ book.title }}</h2>
+			ISBN: {{ book.isbn }}<br>
+			Author: {{ book.author }}<br>
+			Publish Year: {{ book.year }}<br>
+		{% endfor %}
+		<br>
+		<h2>Reviews Coming Soon</h2>
 	{% else %}
     	<p>New User? <a href="{{ url_for('register') }}">Click here to register!</a></p>
 		<p>Already have an account? <a href="{{ url_for('login') }}">Click here to log in.</a></p>

@@ -30,21 +30,31 @@ def index():
 
 @app.route("/register", methods = ["GET", "POST"])
 def register():
+	# Error handling for registration:
+	# Taken username rejected
+	# Blank password fields rejected
+	# Both password fields must match
 	errorMessage = ""
 	if request.method == "POST":
-		if request.form.get("password") == request.form.get("password2"):
-			# TODO: implement password check in client side as well for quick feedback
-			username = request.form.get("username")
-			password = request.form.get("password")
-			try:
-				db.execute("INSERT INTO users (username, password) VALUES (:username, :password)", 
-					{"username": username, "password": password})
-				db.commit()
-				session["username"] = username
-				return redirect(url_for('index'))
-			except exc.IntegrityError:
-				db.rollback()
-				errorMessage = "Username already taken"
+		username = request.form.get("username")
+		password = request.form.get("password")
+		password2 = request.form.get("password2")
+		if password == password2:
+			if password == "" or password2 == "" or username == "":
+				errorMessage = "Text fields cannot be left blank"
+			else:
+				try:
+					db.execute("INSERT INTO users (username, password) VALUES (:username, :password)", 
+						{"username": username, "password": password})
+					db.commit()
+					session["username"] = username
+					return redirect(url_for('index'))
+				except exc.IntegrityError:
+					db.rollback()
+					errorMessage = "Username already taken"
+		else:
+			errorMessage = "Password does not match"
+
 	return render_template("register.html", errorMessage=errorMessage)
 
 @app.route("/login", methods = ["GET", "POST"])
@@ -67,14 +77,35 @@ def login():
 
 @app.route("/search", methods = ["GET", "POST"])
 def search():
-	# TODO: make search request appear in URL
-	#		submit not clickable if search bar is empty
-	#		error paragraph below search bar
-	#		search bar in search route w/ current search info
-	#		search for partial matches
-	#		book url will be ISBN
-	searchText = request.form.get("search")
-	searchCategory = request.form.get("searchCategory")
-	bookInfo = db.execute("SELECT isbn, title, author, year FROM books WHERE " + searchCategory + " = :searchText", 
-		{"searchText": searchText})
-	return render_template("search.html", searchText=searchText, bookInfo=bookInfo)
+	searchCategory = ""
+	searchText = ""
+	if request.method == "GET":
+		postSearch = False
+		if 'username' not in session:
+			return redirect(url_for('index'))
+	else:
+		postSearch = True
+		searchText = request.form.get("search")
+		searchCategory = request.form.get("searchCategory")
+
+	if searchText == "" or searchCategory == "":
+		return render_template("search.html", postSearch=postSearch, searchText=searchText, searchCategory = searchCategory, bookInfo=[])
+	searchLike = "%" + searchText + "%"
+	try:
+		bookInfo = db.execute("SELECT isbn, title, author, year FROM books WHERE " + searchCategory + " LIKE :searchLike", 
+			{"searchLike": searchLike})
+	except exc.SQLAlchemyError:
+		bookInfo = []
+	return render_template("search.html", postSearch=postSearch, searchText=searchText, searchCategory = searchCategory, bookInfo=bookInfo)
+
+@app.route("/<book_isbn>", methods = ["GET", "POST"])
+def bookPage(book_isbn):
+	try:
+		bookInfo = db.execute("SELECT isbn, title, author, year FROM books WHERE isbn = :book_isbn", {"book_isbn": book_isbn})
+	except exc.SQLAlchemyError:
+		bookInfo = []
+	return render_template("bookPage.html", bookInfo=bookInfo)
+
+
+
+
