@@ -102,16 +102,39 @@ def search():
 
 @app.route("/<book_isbn>", methods = ["GET", "POST"])
 def bookPage(book_isbn):
+	#TODO: Leave reviews
+	#		Change book title to isbn in table
+	if request.method == "POST":
+		print(session['username'])
+		print(request.form.get("stars"))
+		print(request.form.get("reviewtext"))
+
+	res = None
+	goodreadsAPIInfo = {}
+	validISBN = False
 	try:
 		bookInfo = db.execute("SELECT isbn, title, author, year FROM books WHERE isbn = :book_isbn", {"book_isbn": book_isbn})
+		res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": os.getenv("GOODREADS_KEY"), "isbns": book_isbn})
+		validISBN = True
 	except exc.SQLAlchemyError:
 		bookInfo = []
-	res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": os.getenv("GOODREADS_KEY"), "isbns": book_isbn})
-	print(res.json())
-	goodreadsAPIInfo = json.loads(res.text)["books"][0]
+	if res:
+		goodreadsAPIInfo = json.loads(res.text)["books"][0]
+	else:
+		validISBN = False
 	average_rating = ""
 	work_ratings_count = ""
 	if 'average_rating' in goodreadsAPIInfo.keys() and 'work_ratings_count' in goodreadsAPIInfo.keys():
 		average_rating=goodreadsAPIInfo['average_rating']
 		work_ratings_count=goodreadsAPIInfo['work_ratings_count']
-	return render_template("bookPage.html", bookInfo=bookInfo, average_rating=average_rating, work_ratings_count=work_ratings_count)
+	return render_template("bookPage.html", validISBN=validISBN, book_isbn=book_isbn, bookInfo=bookInfo, average_rating=average_rating, work_ratings_count=work_ratings_count)
+
+
+
+
+
+
+
+
+
+

@@ -28,7 +28,6 @@
 		    	{% for book in bookInfo %}
 			    	<li>	
 			    		<div>
-
 			    			<a href="{{ url_for('bookPage', book_isbn=book.isbn) }}">{{ book.title }}</a><br>
 			    			ISBN: {{ book.isbn }}<br>
 			    			Author: {{ book.author }}<br>
