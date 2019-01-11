@@ -109,6 +109,9 @@ def bookPage(book_isbn):
 	res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": os.getenv("GOODREADS_KEY"), "isbns": book_isbn})
 	print(res.json())
 	goodreadsAPIInfo = json.loads(res.text)["books"][0]
+	average_rating = ""
+	work_ratings_count = ""
 	if 'average_rating' in goodreadsAPIInfo.keys() and 'work_ratings_count' in goodreadsAPIInfo.keys():
-		return render_template("bookPage.html", bookInfo=bookInfo, average_rating=goodreadsAPIInfo['average_rating'], work_ratings_count=goodreadsAPIInfo['work_ratings_count'])
-		
+		average_rating=goodreadsAPIInfo['average_rating']
+		work_ratings_count=goodreadsAPIInfo['work_ratings_count']
+	return render_template("bookPage.html", bookInfo=bookInfo, average_rating=average_rating, work_ratings_count=work_ratings_count)
