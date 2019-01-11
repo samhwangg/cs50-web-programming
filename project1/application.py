@@ -1,4 +1,6 @@
 import os
+import requests
+import json
 
 from flask import Flask, session, render_template, request, redirect, url_for
 from flask_session import Session
@@ -104,8 +106,9 @@ def bookPage(book_isbn):
 		bookInfo = db.execute("SELECT isbn, title, author, year FROM books WHERE isbn = :book_isbn", {"book_isbn": book_isbn})
 	except exc.SQLAlchemyError:
 		bookInfo = []
-	return render_template("bookPage.html", bookInfo=bookInfo)
-
-
-
-
+	res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": os.getenv("GOODREADS_KEY"), "isbns": book_isbn})
+	print(res.json())
+	goodreadsAPIInfo = json.loads(res.text)["books"][0]
+	if 'average_rating' in goodreadsAPIInfo.keys() and 'work_ratings_count' in goodreadsAPIInfo.keys():
+		return render_template("bookPage.html", bookInfo=bookInfo, average_rating=goodreadsAPIInfo['average_rating'], work_ratings_count=goodreadsAPIInfo['work_ratings_count'])
+		

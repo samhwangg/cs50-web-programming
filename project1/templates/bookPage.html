@@ -19,9 +19,17 @@
 			Publish Year: {{ book.year }}<br>
 		{% endfor %}
 		<br>
+		{% if average_rating and work_ratings_count %}
+			<h2>Goodreads Data</h2>
+				<p>Average Rating: {{ average_rating }}</p>
+				<p>Number of Ratings: {{ work_ratings_count }}</p>
+		{% else %}
+			<h2>No Goodreads Data</h2>
+		{% endif %}
 		<h2>Reviews Coming Soon</h2>
 	{% else %}
     	<p>New User? <a href="{{ url_for('register') }}">Click here to register!</a></p>
 		<p>Already have an account? <a href="{{ url_for('login') }}">Click here to log in.</a></p>
+		<h2>Please log in to view content</h2>
 	{% endif %}
 {% endblock %}
