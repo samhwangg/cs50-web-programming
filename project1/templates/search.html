@@ -3,6 +3,9 @@
 {% block title %}
     Bootleg Goodreads - Search Results
 {% endblock %}
+{% block javascript %}
+<script type=text/javascript src="{{ url_for('static', filename='js/search.js') }}"></script>
+{% endblock %}
 
 {% block body %}
 	<h1 style="color:black;"><a href="{{ url_for('index' ) }}">Bootleg Goodreads</a></h1>
@@ -15,7 +18,7 @@
 		<div class="search-bar">
 			<form action="{{ url_for('search') }}" method = "post" name="searchBar" id="searchBar">
 				<input type="text" placeholder="Search..." name="search" id="search">
-				<button type="submit">Submit</button>
+				<input type="submit" value="Submit" onclick="return check();"></button>
 				<br>
 				<input type="radio" name="searchCategory" id="searchCategory" value="ISBN"> ISBN
 				<input type="radio" name="searchCategory" id="searchCategory" value="Title" checked> Title

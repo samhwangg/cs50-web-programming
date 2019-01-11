@@ -70,7 +70,6 @@ def login():
 		if db.execute("SELECT * FROM users WHERE username = :username AND password = :password", 
 			{"username": username, "password": password}).rowcount == 1:
 			# existing/correct username is stored in the session
-			#TODO: return error if incorrect password
 			session["username"] = username
 			return redirect(url_for('index'))
 		else:
@@ -102,8 +101,6 @@ def search():
 
 @app.route("/<book_isbn>", methods = ["GET", "POST"])
 def bookPage(book_isbn):
-	#TODO: Leave reviews
-	#		Change book title to isbn in table
 	if request.method == "POST":
 		print(session['username'])
 		print(request.form.get("stars"))

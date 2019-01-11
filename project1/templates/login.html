@@ -3,18 +3,21 @@
 {% block title %}
     Bootleg Goodreads - Log In
 {% endblock %}
+{% block javascript %}
+<script type=text/javascript src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}
 
 {% block body %}
     <h1 style="color:black;"><a href="{{ url_for('index' ) }}">Bootleg Goodreads</a></h1>
     <h2>Login Here</h2>
-    <form action="{{ url_for('login') }}" method = "post">
+    <form action="{{ url_for('login') }}" method = "post" id="loginform">
     	Username: <br>
-    	<input type="text" name="username"><br>
+    	<input type="text" name="username" id="username"><br>
     	Password: <br>
-    	<input type="password" name="password"><br>
+    	<input type="password" name="password" id="password"><br>
     	<br>
-    	<input type="submit" value="Submit">
+    	<input type="submit" value="Submit" onclick="return check();">
     </form>
     <p>New User? <a href="{{ url_for('register') }}">Click here to register!</a></p>
-    <p>{{ errorMessage }}</p>
+    {% if errorMessage %}<p>{{ errorMessage }}</p>{% endif %}
 {% endblock %}

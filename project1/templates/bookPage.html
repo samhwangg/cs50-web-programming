@@ -7,6 +7,9 @@
 {% block moreCSS %}
 	<link rel="stylesheet" href="{{ url_for('static', filename='styles/bookPage.css') }}">
 {% endblock %}
+{% block javascript %}
+<script type=text/javascript src="{{ url_for('static', filename='js/bookPage.js') }}"></script>
+{% endblock %}
 
 {% block body %}
 	<h1 style="color:black;"><a href="{{ url_for('index' ) }}">Bootleg Goodreads</a></h1>
@@ -67,9 +70,9 @@
 				  </label>
 			</form>
 			<br>
-			<textarea rows="4" cols="50" name="reviewtext" form="reviewform" placeholder="Enter Review Here..."></textarea>
+			<textarea rows="4" cols="50" name="reviewtext" id="reviewtext" form="reviewform" placeholder="Enter Review Here..."></textarea>
 			<br>
-			<input type="submit" form="reviewform">
+			<input type="submit" form="reviewform" onclick="return check();">
 			<ul>
 				{% for review in reviews %}
 					<li>
