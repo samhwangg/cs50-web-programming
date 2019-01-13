@@ -34,50 +34,56 @@
 			{% else %}
 				<h2>No Goodreads Data</h2>
 			{% endif %}
+			{% if reviewFalse %}
+				<br>
+				<h2>Reviews</h2>
+				New Review for {{ session['username'] }}<br>
+				<form action="{{ url_for('bookPage', book_isbn=book_isbn) }}" id="reviewform" class="rating" method="post">
+					<label>
+					    <input type="radio" name="stars" value="1" />
+					    <span class="icon">★</span>
+					  </label>
+					  <label>
+					    <input type="radio" name="stars" value="2" />
+					    <span class="icon">★</span>
+					    <span class="icon">★</span>
+					  </label>
+					  <label>
+					    <input type="radio" name="stars" value="3" />
+					    <span class="icon">★</span>
+					    <span class="icon">★</span>
+					    <span class="icon">★</span>   
+					  </label>
+					  <label>
+					    <input type="radio" name="stars" value="4" />
+					    <span class="icon">★</span>
+					    <span class="icon">★</span>
+					    <span class="icon">★</span>
+					    <span class="icon">★</span>
+					  </label>
+					  <label>
+					    <input type="radio" name="stars" value="5" checked />
+					    <span class="icon">★</span>
+					    <span class="icon">★</span>
+					    <span class="icon">★</span>
+					    <span class="icon">★</span>
+					    <span class="icon">★</span>
+					  </label>
+				</form>
+				<br>
+				<textarea rows="4" cols="50" name="reviewtext" id="reviewtext" form="reviewform" placeholder="Enter Review Here..."></textarea>
+				<br>
+				<input type="submit" form="reviewform" onclick="return check();">
+				<br>
+			{%  endif %}
 			<br>
-			<h2>Reviews</h2>
-			New Review for {{ session['username'] }}<br>
-			<form action="{{ url_for('bookPage', book_isbn=book_isbn) }}" id="reviewform" class="rating" method="post">
-				<label>
-				    <input type="radio" name="stars" value="1" />
-				    <span class="icon">★</span>
-				  </label>
-				  <label>
-				    <input type="radio" name="stars" value="2" />
-				    <span class="icon">★</span>
-				    <span class="icon">★</span>
-				  </label>
-				  <label>
-				    <input type="radio" name="stars" value="3" />
-				    <span class="icon">★</span>
-				    <span class="icon">★</span>
-				    <span class="icon">★</span>   
-				  </label>
-				  <label>
-				    <input type="radio" name="stars" value="4" />
-				    <span class="icon">★</span>
-				    <span class="icon">★</span>
-				    <span class="icon">★</span>
-				    <span class="icon">★</span>
-				  </label>
-				  <label>
-				    <input type="radio" name="stars" value="5" checked />
-				    <span class="icon">★</span>
-				    <span class="icon">★</span>
-				    <span class="icon">★</span>
-				    <span class="icon">★</span>
-				    <span class="icon">★</span>
-				  </label>
-			</form>
-			<br>
-			<textarea rows="4" cols="50" name="reviewtext" id="reviewtext" form="reviewform" placeholder="Enter Review Here..."></textarea>
-			<br>
-			<input type="submit" form="reviewform" onclick="return check();">
 			<ul>
-				{% for review in reviews %}
+				{% for review in reviewInfo %}
 					<li>
 						<div>
-							{{ review.username }}</a><br>
+							{{ review.username }}<br>
+			    			{{ review.reviewtext }}<br>
+			    			{{ review.rating }}<br>
 			    			{{ review.dateposted }}<br>
 						</div>
 					</li>

@@ -101,21 +101,36 @@ def search():
 
 @app.route("/<book_isbn>", methods = ["GET", "POST"])
 def bookPage(book_isbn):
+	#INSERT INTO reviews (
+	#			username, isbn, reviewtext, rating, dateposted)
+	#			VALUES ('aaa', '0786838655', 'Good stuff', 5, NOW());
 	if request.method == "POST":
-		print(session['username'])
-		print(request.form.get("stars"))
-		print(request.form.get("reviewtext"))
-		#return redirect(url_for('bookPage', book_isbn=book_isbn))
+		stars = (request.form.get("stars"))
+		reviewtext = (request.form.get("reviewtext"))
+		try:
+			db.execute("INSERT INTO reviews (username, isbn, reviewtext, rating, dateposted) VALUES (:username, :isbn, :reviewtext, :rating, NOW())", 
+				{"username": session['username'], "isbn": book_isbn, "reviewtext": reviewtext,"rating": stars})
+			db.commit()
+		except exc.SQLAlchemyError:
+			pass
+		return redirect(url_for('bookPage', book_isbn=book_isbn))
 
 	res = None
 	goodreadsAPIInfo = {}
 	validISBN = False
+	if db.execute("SELECT username FROM reviews WHERE username = :username", {"username": session['username']}).rowcount:
+		reviewFalse = False
+	else:
+		reviewFalse = True
+
 	try:
 		bookInfo = db.execute("SELECT isbn, title, author, year FROM books WHERE isbn = :book_isbn", {"book_isbn": book_isbn})
+		reviewInfo = db.execute("SELECT username, reviewtext, rating, dateposted FROM reviews WHERE isbn = :book_isbn", {"book_isbn": book_isbn})
 		res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": os.getenv("GOODREADS_KEY"), "isbns": book_isbn})
 		validISBN = True
 	except exc.SQLAlchemyError:
 		bookInfo = []
+		reviewInfo = []
 	if res:
 		goodreadsAPIInfo = json.loads(res.text)["books"][0]
 	else:
@@ -125,12 +140,8 @@ def bookPage(book_isbn):
 	if 'average_rating' in goodreadsAPIInfo.keys() and 'work_ratings_count' in goodreadsAPIInfo.keys():
 		average_rating=goodreadsAPIInfo['average_rating']
 		work_ratings_count=goodreadsAPIInfo['work_ratings_count']
-	return render_template("bookPage.html", validISBN=validISBN, book_isbn=book_isbn, bookInfo=bookInfo, average_rating=average_rating, work_ratings_count=work_ratings_count)
-
-
-
-
-
+	
+	return render_template("bookPage.html", validISBN=validISBN, book_isbn=book_isbn, bookInfo=bookInfo, reviewInfo=reviewInfo, average_rating=average_rating, work_ratings_count=work_ratings_count, reviewFalse=reviewFalse)
 
 
 
