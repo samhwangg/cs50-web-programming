@@ -108,7 +108,7 @@ def bookPage(book_isbn):
 		stars = (request.form.get("stars"))
 		reviewtext = (request.form.get("reviewtext"))
 		try:
-			db.execute("INSERT INTO reviews (username, isbn, reviewtext, rating, dateposted) VALUES (:username, :isbn, :reviewtext, :rating, NOW())", 
+			db.execute("INSERT INTO reviews (username, isbn, reviewtext, rating, dateposted) VALUES (:username, :isbn, :reviewtext, :rating, current_date)", 
 				{"username": session['username'], "isbn": book_isbn, "reviewtext": reviewtext,"rating": stars})
 			db.commit()
 		except exc.SQLAlchemyError:

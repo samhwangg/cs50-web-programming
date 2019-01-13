@@ -31,12 +31,12 @@
 				<h2>Goodreads Data</h2>
 				Average Rating: {{ average_rating }}<br>
 				Number of Ratings: {{ work_ratings_count }}<br>
+				<br>
 			{% else %}
 				<h2>No Goodreads Data</h2>
 			{% endif %}
+			<h2>Reviews</h2>
 			{% if reviewFalse %}
-				<br>
-				<h2>Reviews</h2>
 				New Review for {{ session['username'] }}<br>
 				<form action="{{ url_for('bookPage', book_isbn=book_isbn) }}" id="reviewform" class="rating" method="post">
 					<label>
@@ -75,16 +75,20 @@
 				<br>
 				<input type="submit" form="reviewform" onclick="return check();">
 				<br>
+				<br>
 			{%  endif %}
-			<br>
 			<ul>
 				{% for review in reviewInfo %}
 					<li>
 						<div>
 							{{ review.username }}<br>
+							Posted on: {{ review.dateposted }}<br>
+							<label>
+							{% for num in range(review.rating) %}
+						    	<span style="color:#FFD700" class="iconreview">★</span>
+							{% endfor %}
+						  	</label><br>
 			    			{{ review.reviewtext }}<br>
-			    			{{ review.rating }}<br>
-			    			{{ review.dateposted }}<br>
 						</div>
 					</li>
 				{% endfor %}
