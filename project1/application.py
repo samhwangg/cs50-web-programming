@@ -105,6 +105,7 @@ def bookPage(book_isbn):
 		print(session['username'])
 		print(request.form.get("stars"))
 		print(request.form.get("reviewtext"))
+		#return redirect(url_for('bookPage', book_isbn=book_isbn))
 
 	res = None
 	goodreadsAPIInfo = {}
