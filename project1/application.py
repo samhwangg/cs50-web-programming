@@ -118,7 +118,7 @@ def bookPage(book_isbn):
 	res = None
 	goodreadsAPIInfo = {}
 	validISBN = False
-	if db.execute("SELECT username FROM reviews WHERE username = :username", {"username": session['username']}).rowcount:
+	if db.execute("SELECT username FROM reviews WHERE username = :username and isbn = :isbn", {"username": session['username'], "isbn": book_isbn}).rowcount:
 		reviewFalse = False
 	else:
 		reviewFalse = True
