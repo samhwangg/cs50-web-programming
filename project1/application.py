@@ -2,7 +2,7 @@ import os
 import requests
 import json
 
-from flask import Flask, session, render_template, request, redirect, url_for
+from flask import Flask, session, render_template, request, redirect, url_for, jsonify, abort
 from flask_session import Session
 from sqlalchemy import create_engine, exc
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -143,7 +143,30 @@ def bookPage(book_isbn):
 	
 	return render_template("bookPage.html", validISBN=validISBN, book_isbn=book_isbn, bookInfo=bookInfo, reviewInfo=reviewInfo, average_rating=average_rating, work_ratings_count=work_ratings_count, reviewFalse=reviewFalse)
 
+@app.route("/api/<book_isbn>", methods = ["GET"])
+def isbn_api(book_isbn):
+	# GET method request returns json with info about book
+	# returns title, author, publication date, ISBN number, review count, and average score
 
-
-
+	if db.execute("SELECT isbn FROM books WHERE isbn = :book_isbn", {"book_isbn": book_isbn}).rowcount:
+		bookInfo = db.execute("SELECT isbn, title, author, year FROM books WHERE isbn = :book_isbn", {"book_isbn": book_isbn})
+		reviewCountInfo = db.execute("SELECT COUNT(reviewtext) FROM reviews WHERE isbn = :book_isbn", {"book_isbn": book_isbn})
+		averageRatingInfo = db.execute("SELECT AVG(rating) FROM reviews WHERE isbn = :book_isbn", {"book_isbn": book_isbn})
+		count = reviewCountInfo.fetchone()
+		averageRating = averageRatingInfo.fetchone()
+		for book in bookInfo:
+			title = book.title
+			author = book.author
+			year = book.year
+			isbn = book.isbn
+		returnDict = {
+			"title": title,
+			"author": author,
+			"year": year,
+			"isbn": isbn,
+			"review_count": count[0],
+			"average_rating": float(averageRating[0]),
+		}
+		return jsonify(returnDict)
+	abort(404)
 
