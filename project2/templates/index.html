@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Flack
+{% endblock %}
+{% block javascript %}
+<script src="static/js/index.js"></script>
+{% endblock %}
+
+{% block body %}
+	<h1>Welcome to Flack</h1>
+
+	<h2></h2>
+	<button id="logout">Logout</button>
+	<form id="usernameInitialize">
+		Please enter your username: <br>
+		<input type="text" name="username" id="username">
+		<input type="submit" value="Submit" id="submitUsername">
+	</form>
+{% endblock %}
+
+
