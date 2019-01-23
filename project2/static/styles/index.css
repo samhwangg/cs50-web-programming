@@ -1,0 +1,66 @@
+.sidenav {
+  height: 100%;
+  width: 15%  ;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.sidenav-title {
+  display: block;
+  padding: 6px 8px 6px 16px;
+  color: #818181;
+  font-size: 40px;
+  font-weight: bold;
+}
+
+.sidenav-description {
+  display: block;
+  padding: 6px 8px 6px 16px;
+  color: #818181;
+}
+
+.sidenav-login-button {
+  display: block;
+  padding: 6px 8px 6px 16px;
+}
+
+.sidenav-channel {
+  display: block;
+  padding: 6px 8px 6px 16px;
+  color: #818181;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.username-form {
+  display: block;
+  padding: 6px 8px 6px 16px;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #818181;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+ul.channel-list {
+  list-style-type: none;
+  margin-left: 10px;
+  padding: 0;
+}
+
+.container {
+  margin-left: 15%;
+  padding: 0px 10px;
+}

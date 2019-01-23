@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
-
 @app.route("/", methods = ["GET", "POST"])
 def index():
 	return render_template("index.html")
+

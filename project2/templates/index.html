@@ -1,22 +1,31 @@
-{% extends "layout.html" %}
-
-{% block title %}
-Flack
-{% endblock %}
-{% block javascript %}
-<script src="static/js/index.js"></script>
-{% endblock %}
-
-{% block body %}
-	<h1>Welcome to Flack</h1>
-
-	<h2></h2>
-	<button id="logout">Logout</button>
-	<form id="usernameInitialize">
-		Please enter your username: <br>
-		<input type="text" name="username" id="username">
-		<input type="submit" value="Submit" id="submitUsername">
-	</form>
-{% endblock %}
-
-
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Flack</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel ="stylesheet" href="static/styles/index.css">
+        <script src="static/js/index.js"></script>
+    </head>
+    <body>
+        <div class="sidenav">
+        	<div class="sidenav-title">Flack</div>
+        	<div class="sidenav-description">Imitation Slack created with Flask</div>
+        	<form id="usernameInitialize" class="username-form">
+				<div style="color: #818181">Please enter your username:</div>
+				<input type="text" name="username" id="username"><br>
+			</form>
+			<div class="sidenav-login-button"><button id="submitUsername" type="submit" form="usernameInitialize" value="Submit">Submit</button></div>
+        	<div class="sidenav-channel">Channels</div>
+        	<ul class="channel-list">
+				<li><a href="#">List</a></li>
+				<li><a href="#">Of</a></li>
+				<li><a href="#">Channel</a></li>
+				<li><a href="#">Names</a></li>
+			</ul>
+		</div>
+        <div class="container">
+            <h2 id="user-display"></h2>
+			<button id="logout">Logout</button>
+        </div>
+    </body>
+</html>

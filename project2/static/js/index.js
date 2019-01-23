@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	if(localStorage.getItem('username')) {
 		document.getElementById('usernameInitialize').style.display = "none";
 		document.getElementById('logout').style.display = "block";
-		document.querySelector('h2').innerHTML = localStorage.getItem('username');
+		document.querySelector('#user-display').innerHTML = localStorage.getItem('username');
 	}
 	else {
 		document.getElementById('usernameInitialize').style.display = "block";
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem('username', username);
 
         // Alter H2 tag to display username
-        document.querySelector('h2').innerHTML = username;
+        document.querySelector('#user-display').innerHTML = username;
 
         // Reset form and don't allow submission
         document.querySelector('#username').value = '';
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelector('#logout').onclick = () => {
     	localStorage.removeItem('username');
-    	document.querySelector('h2').innerHTML = '';
+    	document.querySelector('#user-display').innerHTML = '';
     	document.getElementById('usernameInitialize').style.display = "block";
     	document.getElementById('logout').style.display = "none";
     };
