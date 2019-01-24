@@ -5,13 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Check if username already defined
 	if(localStorage.getItem('username')) {
-		document.getElementById('usernameInitialize').style.display = "none";
-		document.getElementById('logout').style.display = "block";
+		showUsername();
 		document.querySelector('#user-display').innerHTML = localStorage.getItem('username');
 	}
 	else {
-		document.getElementById('usernameInitialize').style.display = "block";
-		document.getElementById('logout').style.display = "none";
+		showLogin();
 	}
 
 	// Enable button if there is text in the form
@@ -34,17 +32,34 @@ document.addEventListener('DOMContentLoaded', () => {
         // Reset form and don't allow submission
         document.querySelector('#username').value = '';
         document.querySelector('#submitUsername').disabled = true;
-        document.getElementById('usernameInitialize').style.display = "none";
-        document.getElementById('logout').style.display = "block";
+        showUsername();
         return false;
 
     };
 
+    document.querySelector('#add-channel').onclick = () => {
+    	alert('Working!');
+    };
+
+    // Delete from local storage and show login prompt
     document.querySelector('#logout').onclick = () => {
     	localStorage.removeItem('username');
     	document.querySelector('#user-display').innerHTML = '';
-    	document.getElementById('usernameInitialize').style.display = "block";
-    	document.getElementById('logout').style.display = "none";
+    	showLogin();
     };
+
+    // Hide Login and show Username
+    function showUsername() {
+		document.getElementById('sidenav-login').style.display = "none";
+		document.getElementById('sidenav-username').style.display = "block";
+		document.getElementById('logout').style.display = "block";
+	}
+
+	// Hide Username and show Login
+	function showLogin() {
+		document.getElementById('sidenav-login').style.display = "block";
+		document.getElementById('sidenav-username').style.display = "none";
+		document.getElementById('logout').style.display = "none";
+	}
 
 });

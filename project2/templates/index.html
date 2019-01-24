@@ -9,23 +9,30 @@
     <body>
         <div class="sidenav">
         	<div class="sidenav-title">Flack</div>
-        	<div class="sidenav-description">Imitation Slack created with Flask</div>
-        	<form id="usernameInitialize" class="username-form">
-				<div style="color: #818181">Please enter your username:</div>
-				<input type="text" name="username" id="username"><br>
-			</form>
-			<div class="sidenav-login-button"><button id="submitUsername" type="submit" form="usernameInitialize" value="Submit">Submit</button></div>
-        	<div class="sidenav-channel">Channels</div>
+        	<p class="sidenav-description">Imitation Slack created with Flask</p>
+        	<div class="sidenav-login" id="sidenav-login">
+	        	<form id="usernameInitialize">
+					<div class="sidenav-prompt">Select Name:</div>
+					<input type="text" name="username" id="username"><br>
+				</form>
+				<button id="submitUsername" type="submit" form="usernameInitialize" value="Submit">Submit</button>
+			</div>
+			<div class="sidenav-username" id="sidenav-username">
+				<p id="user-display"></p>
+				<button id="logout">Logout</button>
+			</div>
+        	<div class="sidenav-channel">
+        		Channels
+        		<a href="#" id="add-channel">+</a>
+        	</div>
         	<ul class="channel-list">
-				<li><a href="#">List</a></li>
-				<li><a href="#">Of</a></li>
-				<li><a href="#">Channel</a></li>
-				<li><a href="#">Names</a></li>
+        		{% for channel in channelList %}
+					<li><a href="#"># {{ channel }}</a></li>
+				{% endfor %}
 			</ul>
 		</div>
         <div class="container">
-            <h2 id="user-display"></h2>
-			<button id="logout">Logout</button>
+
         </div>
     </body>
 </html>

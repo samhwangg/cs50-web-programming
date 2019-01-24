@@ -8,7 +8,11 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
+channelList = ["List", "Of", "Channel", "Names"]
+
 @app.route("/", methods = ["GET", "POST"])
 def index():
-	return render_template("index.html")
+	for channel in channelList:
+		print(channel)
+	return render_template("index.html", channelList=channelList)
 

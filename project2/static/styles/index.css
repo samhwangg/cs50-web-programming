@@ -5,53 +5,49 @@
   z-index: 1;
   top: 0;
   left: 0;
-  background-color: #111;
+  background-image: linear-gradient(to bottom right, navy, purple);
   overflow-x: hidden;
   padding-top: 20px;
 }
 
-.sidenav-title {
+.sidenav-title, .sidenav-description, .sidenav-username, .sidenav-login, .sidenav-channel, .channel-list a {
   display: block;
   padding: 6px 8px 6px 16px;
-  color: #818181;
+}
+
+.sidenav-title, .sidenav-description, .sidenav-prompt, .sidenav-channel, .channel-list a, #user-display, #add-channel {
+  color: #fbfbfa;
+}
+
+.sidenav-title {
   font-size: 40px;
   font-weight: bold;
 }
 
-.sidenav-description {
-  display: block;
-  padding: 6px 8px 6px 16px;
-  color: #818181;
+.user-display {
+  font-size: 20px;
+
 }
 
-.sidenav-login-button {
-  display: block;
-  padding: 6px 8px 6px 16px;
-}
-
-.sidenav-channel {
-  display: block;
-  padding: 6px 8px 6px 16px;
-  color: #818181;
+.sidenav-channel, #user-display {
   font-size: 30px;
   font-weight: bold;
 }
 
-.username-form {
-  display: block;
-  padding: 6px 8px 6px 16px;
+#add-channel {
+  display: inline-block;
+  float: right;
+  padding-right: 10px;
+  text-decoration: none;
 }
 
-.sidenav a {
-  padding: 6px 8px 6px 16px;
+.channel-list a {
   text-decoration: none;
   font-size: 20px;
-  color: #818181;
-  display: block;
 }
 
-.sidenav a:hover {
-  color: #f1f1f1;
+.sidenav .channel-list a:hover {
+  background-color: rgba(0,0,0,0.5);
 }
 
 ul.channel-list {
@@ -62,5 +58,5 @@ ul.channel-list {
 
 .container {
   margin-left: 15%;
-  padding: 0px 10px;
+  padding: 0px 20px;
 }
