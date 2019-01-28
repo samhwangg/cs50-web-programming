@@ -37,10 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     };
 
-    document.querySelector('#add-channel').onclick = () => {
-    	alert('Working!');
-    };
-
     // Delete from local storage and show login prompt
     document.querySelector('#logout').onclick = () => {
     	localStorage.removeItem('username');
@@ -62,4 +58,45 @@ document.addEventListener('DOMContentLoaded', () => {
 		document.getElementById('logout').style.display = "none";
 	}
 
+	var modal = document.getElementById('new-channel-modal');
+	var buttonModal = document.getElementById('add-channel');
+	var modalSpan = document.getElementsByClassName('close-modal')[0];
+
+	buttonModal.onclick = () => {
+		modal.style.display = "block";
+	};
+
+	modalSpan.onclick = () => {
+		modal.style.display = "none";
+	};
+
+	window.onclick = function(event) {
+		if(event.target == modal) {
+			modal.style.display = "none";
+		}
+	};
+
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

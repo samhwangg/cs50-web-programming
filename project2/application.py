@@ -12,7 +12,5 @@ channelList = ["List", "Of", "Channel", "Names"]
 
 @app.route("/", methods = ["GET", "POST"])
 def index():
-	for channel in channelList:
-		print(channel)
 	return render_template("index.html", channelList=channelList)
 
