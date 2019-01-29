@@ -23,9 +23,9 @@
 			</div>
         	<div class="sidenav-channel">
         		Channels
-        		<button id="add-channel">+</button>
+        		<span id="add-channel" class="open-modal">&plus;</span>
         	</div>
-        	<ul class="channel-list">
+        	<ul class="channel-list" id="sidenav-channel-list">
         		{% for channel in channelList %}
 					<li><a href="#"># {{ channel }}</a></li>
 				{% endfor %}
@@ -45,7 +45,7 @@
 			    <div class="modal-body">
 			    	<p>Create a new channel for open discussion.</p>
 					<form id="create-channel">
-						<input type="text" name="newChannelInput" size="35" placeholder="Ex) CS180_Group_Project"/>
+						<input type="text" name="newChannelInput" id="newChannelInput" size="35" placeholder="Ex) CS180_Group_Project"/>
 						<input type="submit" name="Submit">
 					</form><br>
 			    </div>

@@ -58,8 +58,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		document.getElementById('logout').style.display = "none";
 	}
 
+	// Open/Close modal functions
 	var modal = document.getElementById('new-channel-modal');
-	var buttonModal = document.getElementById('add-channel');
+	var buttonModal = document.getElementsByClassName('open-modal')[0];
 	var modalSpan = document.getElementsByClassName('close-modal')[0];
 
 	buttonModal.onclick = () => {
@@ -74,6 +75,38 @@ document.addEventListener('DOMContentLoaded', () => {
 		if(event.target == modal) {
 			modal.style.display = "none";
 		}
+	};
+
+	// AJAX Request to create a new channel
+	document.querySelector('#create-channel').onsubmit = () => {
+
+		// Create new AJAX request
+		const request = new XMLHttpRequest();
+        const newChannelName = document.querySelector('#newChannelInput').value;
+        request.open('POST', '/addchannel');
+
+        // Callback function for when request completes
+        request.onload = () => {
+        	const data = JSON.parse(request.responseText);
+            var channelList = document.getElementById('sidenav-channel-list');
+            var newLi = document.createElement("li");
+            var newA = document.createElement("a");
+            newA.innerHTML = "# " + newChannelName;
+            newA.setAttribute('href', "#");
+            newLi.appendChild(newA);
+            channelList.appendChild(newLi);
+        }
+
+        // Create the "form" data and add data to send with request
+        const data = new FormData();
+        data.append('newChannelInput', newChannelName);
+
+        // Send request
+        request.send(data);
+
+		// Close modal and cancel form submission
+		modal.style.display = "none";
+		return false;
 	};
 
 });

@@ -15,7 +15,7 @@
   padding: 6px 8px 6px 16px;
 }
 
-.sidenav-title, .sidenav-description, .sidenav-prompt, .sidenav-channel, .channel-list a, #user-display, #add-channel {
+.sidenav-title, .sidenav-description, .sidenav-prompt, .sidenav-channel, .channel-list a, #user-display {
   color: #fbfbfa;
 }
 
@@ -34,15 +34,8 @@
   font-weight: bold;
 }
 
-#add-channel {
-  display: inline-block;
-  float: right;
+.open-modal {
   padding-right: 10px;
-  text-decoration: none;
-  background: none;
-  border: none;
-  margin: 0;
-  cursor: pointer;
 }
 
 .channel-list a {
@@ -106,15 +99,17 @@ ul.channel-list {
 }
 
 /* The Close Button */
-.close-modal {
-  color: white;
+.close-modal, .open-modal{
+  color: #fbfbfa;
   float: right;
   font-size: 28px;
   font-weight: bold;
 }
 
 .close-modal:hover,
-.close-modal:focus {
+.close-modal:focus,
+.open-modal:hover,
+.open-modal:focus {
   color: #000;
   text-decoration: none;
   cursor: pointer;
