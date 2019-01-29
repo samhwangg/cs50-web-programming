@@ -60,11 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Open/Close modal functions
 	var modal = document.getElementById('new-channel-modal');
+	var newChannelInput = document.querySelector('#newChannelInput');
+	var channelSubmitInput = document.getElementById('submitChannelName');
 	var buttonModal = document.getElementsByClassName('open-modal')[0];
 	var modalSpan = document.getElementsByClassName('close-modal')[0];
 
 	buttonModal.onclick = () => {
 		modal.style.display = "block";
+		channelSubmitInput.disabled = true;
 	};
 
 	modalSpan.onclick = () => {
@@ -77,12 +80,20 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	};
 
+	newChannelInput.onkeyup = () => {
+		if(newChannelInput.value.length > 0) {
+			channelSubmitInput.disabled = false;
+		}
+		else 
+			channelSubmitInput.disabled = true;
+	};
+
 	// AJAX Request to create a new channel
 	document.querySelector('#create-channel').onsubmit = () => {
 
 		// Create new AJAX request
 		const request = new XMLHttpRequest();
-        const newChannelName = document.querySelector('#newChannelInput').value;
+        const newChannelName = newChannelInput.value;
         request.open('POST', '/addchannel');
 
         // Callback function for when request completes
@@ -105,6 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
         request.send(data);
 
 		// Close modal and cancel form submission
+		newChannelInput.value = '';
+		channelSubmitInput.disabled = true;
 		modal.style.display = "none";
 		return false;
 	};

@@ -47,6 +47,13 @@
   background-color: rgba(0,0,0,0.5);
 }
 
+.channel-list {
+  height: 600px;
+  width: 90%;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
 ul.channel-list {
   list-style-type: none;
   margin-left: 10px;
