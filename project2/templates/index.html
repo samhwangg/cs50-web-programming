@@ -32,10 +32,23 @@
 			</ul>
 		</div>
         <div class="container">
-        	<!--
-        	<input type="text" name="type-message" placeholder="Type a message"/>
-        	<button type="button">Send</button>
-        	-->
+        	<div class="message-display">
+	        	<div class="receive-message">
+	        		<div class="username-message-display">Username Here</div>
+	        		<p>Sample message received in channel</p>
+	        	</div>
+	        	<div class="my-message">
+	        		<div class="username-message-display">Username Here</div>
+	        		<p>Sample message sent to channel</p>
+	        	</div>
+	        </div>
+        	<div class="send-message-form">
+	        	<form id="sendMessage">
+	        		<input type="text" size="150" name="type-message" id="message-input" placeholder="Type a message."/>
+	        		<button type="button" form="sendMessage" id="message-button">Send</button>
+	        	</form>
+	        	<div class="is-typing">Someone might be typing... to implement<div>
+	        </div>
         	<div id="new-channel-modal" class="modal">
 			  <div class="modal-content">
 			    <div class="modal-header">

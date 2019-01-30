@@ -1,6 +1,6 @@
 .sidenav {
   height: 100%;
-  width: 15%  ;
+  width: 18%  ;
   position: fixed;
   z-index: 1;
   top: 0;
@@ -20,17 +20,17 @@
 }
 
 .sidenav-title {
-  font-size: 40px;
+  font-size: 50px;
   font-weight: bold;
 }
 
 .user-display {
-  font-size: 20px;
+  font-size: 30px;
 
 }
 
 .sidenav-channel, #user-display {
-  font-size: 30px;
+  font-size: 35px;
   font-weight: bold;
 }
 
@@ -38,9 +38,13 @@
   padding-right: 10px;
 }
 
+#add-channel {
+  font-size: 30px;
+}
+
 .channel-list a {
   text-decoration: none;
-  font-size: 20px;
+  font-size: 30px;
 }
 
 .sidenav .channel-list a:hover {
@@ -61,7 +65,7 @@ ul.channel-list {
 }
 
 .container {
-  margin-left: 15%;
+  margin-left: 18%;
   padding: 0px 20px;
 }
 
@@ -129,3 +133,44 @@ ul.channel-list {
 }
 
 .modal-body {padding: 2px 16px;}
+
+.send-message-form {
+  border-top: 1px solid #c4c4c4; position: relative;
+  bottom: 0;
+  height: 6%;
+  margin-bottom: 5px;
+  padding-top: 10px;
+  position: fixed;
+}
+
+.message-display {
+  overflow: auto;
+  overflow-y: scroll;
+  height: 845px;
+  width: 100%;
+}
+
+.receive-message {
+  border: 2px solid #dedede;
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+  width: 65%;
+}
+
+.my-message {
+  border: 2px solid #43B6EB;
+  background-color: #54C7FC;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+  width: 65%;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.username-message-display {
+  font-weight: bold;
+  font-size: 16px;
+}
