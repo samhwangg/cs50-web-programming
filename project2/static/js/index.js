@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Username form disabled by default
 	document.querySelector('#submitUsername').disabled = true;
+	document.querySelector('#message-button').disabled = true;
 
 	// Check if username already defined
 	if(localStorage.getItem('username')) {
@@ -90,6 +91,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// AJAX Request to create a new channel
 	document.querySelector('#create-channel').onsubmit = () => {
+		if(!localStorage.getItem('username')) {
+			alert("Please log in before creating a new channel.")
+			return false;
+		}
 
 		// Create new AJAX request
 		const request = new XMLHttpRequest();
@@ -122,5 +127,111 @@ document.addEventListener('DOMContentLoaded', () => {
 		return false;
 	};
 
+	document.querySelector('#message-input').onkeyup = () => {
+		if(document.querySelector('#message-input').value.length > 0) {
+			document.querySelector('#message-button').disabled = false;
+		}
+		else 
+			document.querySelector('#message-button').disabled = true;
+	};
+
+	var isTyping = document.getElementById('is-typing');
+	var canPublish = true;
+	var throttleTime = 200;
+	var clearInterval = 900;
+	var clearTimerId;
+
+	document.querySelector('#message-input').onkeydown = () => {
+		if(!localStorage.getItem('username')) {
+			return;
+		}
+		if(canPublish) {
+			isTyping.innerHTML = localStorage.getItem('username') + " is typing...";
+			canPublish = false;
+			setTimeout(function() {
+				canPublish = true;
+			}, throttleTime);
+
+			//restart timeout timer
+		    clearTimeout(clearTimerId);
+		    clearTimerId = setTimeout(function () {
+		      //clear user is typing message
+		      isTyping.innerHTML = '';
+		    }, clearInterval);
+		}
+	};
+
+	function createMessage(messageContent) {
+		// add parameters later
+
+		// create elements of message block
+		var messageList = document.getElementById('message-display-list');
+		var newLi = document.createElement("li");
+		var newDivMessage = document.createElement("div");
+		var newDivUsername = document.createElement("div");
+		var newMessageText = document.createElement("p");
+
+		// set classes
+		var rand = Math.floor(Math.random() * (1 - 0 + 1) );
+		if(rand == 1) {
+			if(localStorage.getItem('username'))
+				newDivUsername.innerHTML = localStorage.getItem('username');
+			else
+				newDivUsername.innerHTML = "No username set yet";
+			newDivMessage.setAttribute('class', "my-message");
+		}
+		else {
+			newDivUsername.innerHTML = "Username with JavaScript. Fill with localStorage.";
+			newDivMessage.setAttribute('class', "receive-message");
+		}
+		newDivUsername.setAttribute('class', "username-message-display");
+
+		// fill content
+		newMessageText.innerHTML = messageContent;
+
+		// layer elements and append to unordered list
+		newDivMessage.appendChild(newDivUsername);
+		newDivMessage.appendChild(newMessageText);
+		newLi.appendChild(newDivMessage)
+		messageList.appendChild(newLi);
+
+		// makes sure scroll bar is on very bottom
+		messageList.scrollTop = messageList.scrollHeight;
+	}
+
+	document.querySelector('#sendMessage').onsubmit = () => {
+		if(!localStorage.getItem('username')) {
+			alert("Please log in before sending a message.")
+			return false;
+		}
+		var messageContent = document.getElementById('message-input');
+		createMessage(messageContent.value);
+		messageContent.value = '';
+		return false;
+	};
+
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

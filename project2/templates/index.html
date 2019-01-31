@@ -32,22 +32,26 @@
 			</ul>
 		</div>
         <div class="container">
-        	<div class="message-display">
-	        	<div class="receive-message">
-	        		<div class="username-message-display">Username Here</div>
-	        		<p>Sample message received in channel</p>
-	        	</div>
-	        	<div class="my-message">
-	        		<div class="username-message-display">Username Here</div>
-	        		<p>Sample message sent to channel</p>
-	        	</div>
-	        </div>
+        	<ul class="message-display" id="message-display-list">
+        		<li>
+		        	<div class="receive-message">
+		        		<div class="username-message-display">Username Here</div>
+		        		<p>Sample message received in channel</p>
+		        	</div>
+		        </li>
+		        <li>
+		        	<div class="my-message">
+		        		<div class="username-message-display">Username Here</div>
+		        		<p>Sample message sent to channel</p>
+		        	</div>
+		        </li>
+	        </ul>
         	<div class="send-message-form">
 	        	<form id="sendMessage">
-	        		<input type="text" size="150" name="type-message" id="message-input" placeholder="Type a message."/>
-	        		<button type="button" form="sendMessage" id="message-button">Send</button>
+	        		<input type="text" size="150" name="type-message" id="message-input" placeholder="Type a message." autocomplete="off" />
+	        		<button type="submit" form="sendMessage" id="message-button">Send</button>
 	        	</form>
-	        	<div class="is-typing">Someone might be typing... to implement<div>
+	        	<div id="is-typing"></div>
 	        </div>
         	<div id="new-channel-modal" class="modal">
 			  <div class="modal-content">
@@ -58,7 +62,7 @@
 			    <div class="modal-body">
 			    	<p>Create a new channel for open discussion.</p>
 					<form id="create-channel">
-						<input type="text" name="newChannelInput" id="newChannelInput" size="35" placeholder="Ex) CS180_Group_Project" autofocus="true"/>
+						<input type="text" name="newChannelInput" id="newChannelInput" size="35" placeholder="Ex) CS180_Group_Project" autofocus="true" autocomplete="off"/>
 						<input type="submit" name="Submit" id="submitChannelName">
 					</form><br>
 			    </div>

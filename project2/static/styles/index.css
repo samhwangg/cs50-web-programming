@@ -148,6 +148,8 @@ ul.channel-list {
   overflow-y: scroll;
   height: 845px;
   width: 100%;
+  list-style-type: none;
+  padding: 0;
 }
 
 .receive-message {
