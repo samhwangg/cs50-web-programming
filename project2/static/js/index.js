@@ -59,6 +59,18 @@ document.addEventListener('DOMContentLoaded', () => {
 		document.getElementById('logout').style.display = "none";
 	}
 
+	var channelListTag = document.getElementById('sidenav-channel-list').getElementsByTagName('li');
+
+	 for (var i=0; i<channelListTag.length; i++)
+	 {
+	 	channelListTag[i].addEventListener('click', function() {
+	 		for(var j=0; j<channelListTag.length; j++)
+	 			channelListTag[j].style.background = "";
+	 		this.style.background = "rgba(0,0,0,0.7)";
+	 		alert(this.id);
+	 	}, false);
+	 }
+
 	// Open/Close modal functions
 	var modal = document.getElementById('new-channel-modal');
 	var newChannelInput = document.querySelector('#newChannelInput');
@@ -141,10 +153,13 @@ document.addEventListener('DOMContentLoaded', () => {
 	var clearInterval = 900;
 	var clearTimerId;
 
-	document.querySelector('#message-input').onkeydown = () => {
-		if(!localStorage.getItem('username')) {
+	document.querySelector('#message-input').onkeydown = (event) => {
+		// Don't indicate typing when user is not logged in
+		if(!localStorage.getItem('username'))
 			return;
-		}
+		// Don't indicate typing when user presses 'Enter'
+		if(event.keyCode === 13)
+			return;
 		if(canPublish) {
 			isTyping.innerHTML = localStorage.getItem('username') + " is typing...";
 			canPublish = false;
@@ -161,6 +176,23 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	};
 
+	function getTime() {
+		var time = new Date();
+		var hours = time.getHours();
+		var minutes = time.getMinutes();
+		var ampm;
+		if(hours > 12) {
+			hours -= 12;
+			ampm = " PM";
+		}
+		else 
+			ampm = " AM";
+		if(minutes < 10)
+			return hours+":0"+minutes+ampm;
+		else
+			return hours+":"+minutes+ampm;
+	}
+
 	function createMessage(messageContent) {
 		// add parameters later
 
@@ -169,27 +201,29 @@ document.addEventListener('DOMContentLoaded', () => {
 		var newLi = document.createElement("li");
 		var newDivMessage = document.createElement("div");
 		var newDivUsername = document.createElement("div");
+		var newDivTime = document.createElement("div");
 		var newMessageText = document.createElement("p");
 
 		// set classes
+		// temprary random to test incoming and outgoing messages
 		var rand = Math.floor(Math.random() * (1 - 0 + 1) );
-		if(rand == 1) {
-			if(localStorage.getItem('username'))
-				newDivUsername.innerHTML = localStorage.getItem('username');
-			else
-				newDivUsername.innerHTML = "No username set yet";
+		if(rand === 1) {
+			newDivUsername.innerHTML = localStorage.getItem('username');
 			newDivMessage.setAttribute('class', "my-message");
 		}
 		else {
-			newDivUsername.innerHTML = "Username with JavaScript. Fill with localStorage.";
+			newDivUsername.innerHTML = "Receiving message. Fill with sender's username.";
 			newDivMessage.setAttribute('class', "receive-message");
 		}
 		newDivUsername.setAttribute('class', "username-message-display");
+		newDivTime.setAttribute('class', "message-time");
 
 		// fill content
 		newMessageText.innerHTML = messageContent;
+		newDivTime.innerHTML = getTime();
 
 		// layer elements and append to unordered list
+		newDivUsername.appendChild(newDivTime);
 		newDivMessage.appendChild(newDivUsername);
 		newDivMessage.appendChild(newMessageText);
 		newLi.appendChild(newDivMessage)

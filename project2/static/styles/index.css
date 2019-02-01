@@ -10,12 +10,12 @@
   padding-top: 20px;
 }
 
-.sidenav-title, .sidenav-description, .sidenav-username, .sidenav-login, .sidenav-channel, .channel-list a {
+.sidenav-title, .sidenav-description, .sidenav-username, .sidenav-login, .sidenav-channel, .channel-list div {
   display: block;
   padding: 6px 8px 6px 16px;
 }
 
-.sidenav-title, .sidenav-description, .sidenav-prompt, .sidenav-channel, .channel-list a, #user-display {
+.sidenav-title, .sidenav-description, .sidenav-prompt, .sidenav-channel, .channel-list div, #user-display {
   color: #fbfbfa;
 }
 
@@ -42,13 +42,14 @@
   font-size: 30px;
 }
 
-.channel-list a {
+.channel-list div {
   text-decoration: none;
   font-size: 30px;
 }
 
-.sidenav .channel-list a:hover {
-  background-color: rgba(0,0,0,0.5);
+.sidenav .channel-list div:hover {
+  background-color: rgba(0,0,0,0.3);
+  cursor: pointer;
 }
 
 .channel-list {
@@ -170,6 +171,11 @@ ul.channel-list {
   width: 65%;
   margin-left: auto;
   margin-right: 0;
+}
+
+.message-time {
+  float: right;
+  font-size: 12px;
 }
 
 .username-message-display {

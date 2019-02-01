@@ -26,25 +26,37 @@
         		<span id="add-channel" class="open-modal">&plus;</span>
         	</div>
         	<ul class="channel-list" id="sidenav-channel-list">
-        		{% for channel in channelList %}
-					<li><a href="#"># {{ channel }}</a></li>
+        		{% for channel in chatObject %}
+					<li id="{{ channel }}"><div># {{ channel }}</div></li>
 				{% endfor %}
 			</ul>
 		</div>
         <div class="container">
         	<ul class="message-display" id="message-display-list">
-        		<li>
-		        	<div class="receive-message">
-		        		<div class="username-message-display">Username Here</div>
-		        		<p>Sample message received in channel</p>
-		        	</div>
-		        </li>
-		        <li>
-		        	<div class="my-message">
-		        		<div class="username-message-display">Username Here</div>
-		        		<p>Sample message sent to channel</p>
-		        	</div>
-		        </li>
+        		<!--
+		        {% for num in range(chatObject["channelName"]|length) %}
+		        	<li>
+			        	<div class="receive-message">
+			        		<div class="username-message-display">
+			        			{{ chatObject["channelName2"][num]["Username"] }}
+			        			<div class="message-time">{{chatObject["channelName2"][num]["Time"]}}</div>
+			        		</div>
+			        		<p>{{chatObject["channelName2"][num]["Message"]}}</p>
+			        	</div>
+			        </li>
+		        {% endfor %}
+		    	-->
+		        {% for num in range(chatObject["channelName"]|length) %}
+		        	<li>
+			        	<div class="my-message">
+			        		<div class="username-message-display">
+			        			{{ chatObject["channelName"][num]["Username"] }}
+			        			<div class="message-time">{{chatObject["channelName2"][num]["Time"]}}</div>
+			        		</div>
+			        		<p>{{chatObject["channelName2"][num]["Message"]}}</p>
+			        	</div>
+			        </li>
+		        {% endfor %}
 	        </ul>
         	<div class="send-message-form">
 	        	<form id="sendMessage">

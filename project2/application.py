@@ -13,7 +13,44 @@ channelList = ["List", "Of", "Channel", "Names"]
 
 @app.route("/", methods = ["GET", "POST"])
 def index():
-	return render_template("index.html", channelList=channelList)
+	
+	chatObject = {
+	"channelName":
+		[
+			{
+				"Message":"messagetext11",
+				"Username":"usernametext11",
+				"Time":"Timetext11"
+			},
+			{
+				"Message":"messagetext12",
+				"Username":"usernametext12",
+				"Time":"Timetext12"
+			}
+
+		]
+	}
+	chatObject["channelName2"] = [{
+			"Message":"messagetext21",
+			"Username":"usernametext21",
+			"Time":"Timetext21"
+			}]
+
+	chatObject["channelName2"].append({
+			"Message":"messagetext22",
+			"Username":"usernametext22",
+			"Time":"Timetext22"
+			})
+	# create new channel
+	chatObject["channelName3"] = []
+	# append new message
+	chatObject["channelName3"].append({
+			"Message":"messagetext31",
+			"Username":"usernametext31",
+			"Time":"Timetext31"
+			})
+
+	return render_template("index.html", channelList=channelList, chatObject=chatObject)
 
 @app.route("/addchannel", methods = ["POST"])
 def addChannel():
@@ -21,4 +58,57 @@ def addChannel():
 	newChannelName = request.form.get("newChannelInput")
 	channelList.append(newChannelName)
 	return json.dumps(channelList)
+
+@app.route("/testjson")
+def test():
+	testJson = {
+		"channelName":
+			[
+				{
+					"Message":"messagetext11",
+					"Username":"usernametext11",
+					"Time":"Timetext11"
+				},
+				{
+					"Message":"messagetext12",
+					"Username":"usernametext12",
+					"Time":"Timetext12"
+				}
+
+			]
+		}
+	testJson["channelName2"] = [{
+			"Message":"messagetext21",
+			"Username":"usernametext21",
+			"Time":"Timetext21"
+			}]
+	for key in testJson:
+		for num in range(len(testJson[key])):
+			print(testJson[key][num])
+
+	testJson["channelName2"].append({
+			"Message":"messagetext22",
+			"Username":"usernametext22",
+			"Time":"Timetext22"
+			})
+	# create new channel
+	testJson["channelName3"] = []
+	# append new message
+	testJson["channelName3"].append({
+			"Message":"messagetext31",
+			"Username":"usernametext31",
+			"Time":"Timetext31"
+			})
+
+	for num in range(len(testJson["channelName2"])):
+		print(testJson["channelName2"][num]["Message"])
+
+	return jsonify(testJson)
+
+
+
+
+
+
+
 
