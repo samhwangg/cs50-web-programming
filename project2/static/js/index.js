@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// AJAX Request to create a new channel
 	document.querySelector('#create-channel').onsubmit = () => {
 		if(!localStorage.getItem('username')) {
-			alert("Please log in before creating a new channel.")
+			alert("Please log in before creating a new channel.");
 			return false;
 		}
 
@@ -110,14 +110,29 @@ document.addEventListener('DOMContentLoaded', () => {
         // Callback function for when request completes
         // Create new 'li' element for channel list
         request.onload = () => {
-            var channelList = document.getElementById('sidenav-channel-list');
-            var newLi = document.createElement("li");
-            var newDiv= document.createElement("div");
-            newDiv.innerHTML = "# " + newChannelName;
-            newLi.setAttribute('id', newChannelName);
-            newLi.appendChild(newDiv);
-            channelList.appendChild(newLi);
-            loadChannelOnClick();
+        	const data = JSON.parse(request.responseText);
+        	if(data.success) {
+	            var channelList = document.getElementById('sidenav-channel-list');
+	            var newLi = document.createElement("li");
+	            var newDiv= document.createElement("div");
+	            newDiv.innerHTML = "# " + newChannelName;
+	            newLi.setAttribute('id', newChannelName);
+	            newLi.appendChild(newDiv);
+	            channelList.appendChild(newLi);
+	            clearChannelBackground();
+	            loadChannelOnClick();
+	            changeChannel(newChannelName);  
+	            channelList.scrollTop = channelList.scrollHeight;
+
+	            // Close modal and cancel form submission
+				newChannelInput.value = '';
+				channelSubmitInput.disabled = true;
+				modal.style.display = "none";
+	        }
+	        else {
+	        	alert("Channel name taken. Please choose a different name.");
+	        	return false;
+	        }
         }
 
         // Create the "form" data and add data to send with request
@@ -127,10 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Send request
         request.send(data);
 
-		// Close modal and cancel form submission
-		newChannelInput.value = '';
-		channelSubmitInput.disabled = true;
-		modal.style.display = "none";
 		return false;
 	};
 
@@ -173,18 +184,22 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	};
 
+	var channelListTag = document.getElementById('sidenav-channel-list').getElementsByTagName('li');
+
+	function clearChannelBackground() {
+		for(var j=0; j<channelListTag.length; j++)
+			channelListTag[j].style.background = "";
+	}
+
 	// Dynamically create onclick for each channel
 	function loadChannelOnClick() {
-		var channelListTag = document.getElementById('sidenav-channel-list').getElementsByTagName('li');
-
 		for(var i = 0; i < channelListTag.length; i++)
 		{
 			channelListTag[i].addEventListener('click', function() {
 				// do nothing if click on same channel
 				if(localStorage.getItem('currChannel') === this.id)
 					return false;
-				for(var j=0; j<channelListTag.length; j++)
-					channelListTag[j].style.background = "";
+				clearChannelBackground();
 				changeChannel(this.id);
 			}, false);
 		}
@@ -283,7 +298,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.querySelector('#sendMessage').onsubmit = () => {
 		// don't allow message sending if user is not logged in
 		if(!localStorage.getItem('username')) {
-			alert("Please log in before sending a message.")
+			alert("Please log in before sending a message.");
+			return false;
+		}
+
+		if(!localStorage.getItem('currChannel')) {
+			alert("Please select a channel before sending a message");
 			return false;
 		}
 

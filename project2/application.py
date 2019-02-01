@@ -54,10 +54,13 @@ def addChannel():
 	# Get data from FormData() object
 	newChannelName = request.form.get("newChannelInput")
 
+	if newChannelName in chatObject:
+		return jsonify({"success": False})
+
 	# Create new channel
 	chatObject[newChannelName] = []
 
-	return ('', 204)
+	return jsonify({"success": True})
 
 @app.route("/addmessage", methods = ["POST"])
 def addMessage():
