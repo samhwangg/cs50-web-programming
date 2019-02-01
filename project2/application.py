@@ -74,7 +74,12 @@ def addMessage():
 		"Time":time
 		})
 
-	return ('', 204)
+	print(len(chatObject[channel]))
+	if(len(chatObject[channel]) > 100):
+		chatObject[channel].pop(0)
+		return jsonify({"change": True})
+
+	return jsonify({"change": False})
 
 
 @app.route("/changechannel", methods = ["POST"])

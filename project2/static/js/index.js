@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#username').value = '';
         document.querySelector('#submitUsername').disabled = true;
         showUsername();
+        if(localStorage.getItem('currChannel'))
+        	changeChannel(localStorage.getItem('currChannel'));
         return false;
 
     };
@@ -43,6 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#logout').onclick = () => {
     	localStorage.removeItem('username');
     	document.querySelector('#user-display').innerHTML = '';
+    	if(localStorage.getItem('currChannel'))
+        	changeChannel(localStorage.getItem('currChannel'));
     	showLogin();
     };
 
@@ -110,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
             var newLi = document.createElement("li");
             var newDiv= document.createElement("div");
             newDiv.innerHTML = "# " + newChannelName;
-            newDiv.setAttribute('id', newChannelName);
+            newLi.setAttribute('id', newChannelName);
             newLi.appendChild(newDiv);
             channelList.appendChild(newLi);
             loadChannelOnClick();
@@ -181,7 +185,6 @@ document.addEventListener('DOMContentLoaded', () => {
 					return false;
 				for(var j=0; j<channelListTag.length; j++)
 					channelListTag[j].style.background = "";
-				this.style.background = "rgba(0,0,0,0.7)";
 				changeChannel(this.id);
 			}, false);
 		}
@@ -211,6 +214,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // change localStorage
         localStorage.setItem('currChannel', channelName);
+
+        var channelStyle = document.getElementById(channelName);
+        channelStyle.style.background = "rgba(0,0,0,0.7)";
 	}
 
 	// Create Timestamp
@@ -291,6 +297,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		const request = new XMLHttpRequest();
         request.open('POST', '/addmessage');
 
+        // check if return JSON indicates change in message (>100)
+        request.onload = () => {
+        	const data = JSON.parse(request.responseText);
+        	if(data.change)
+        		changeChannel(localStorage.getItem('currChannel'));
+        }
+
         // Create form data to send with AJAX
         const data = new FormData();
         data.append('channel', localStorage.getItem('currChannel'));
@@ -308,8 +321,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// load channel onClick functions once page is finished loading
 	window.addEventListener("DOMContentLoaded", loadChannelOnClick(), false);
-	if(localStorage.getItem('currChannel'))
-		window.addEventListener("DOMContentLoaded", changeChannel(localStorage.getItem('currChannel')), false);
+	window.addEventListener("DOMContentLoaded", function() {
+		if(localStorage.getItem('currChannel')) {
+			changeChannel(localStorage.getItem('currChannel'))
+		}
+
+	}, false);
 
 });
 

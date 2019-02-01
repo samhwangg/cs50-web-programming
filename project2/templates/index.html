@@ -33,17 +33,26 @@
 		</div>
         <div class="container">
         	<ul class="message-display" id="message-display-list">
-		        {% for num in range(chatObject["channelName"]|length) %}
-		        	<li>
-			        	<div class="my-message">
-			        		<div class="username-message-display">
-			        			{{ chatObject["channelName"][num]["Username"] }}
-			        			<div class="message-time">{{chatObject["channelName2"][num]["Time"]}}</div>
-			        		</div>
-			        		<p>{{chatObject["channelName2"][num]["Message"]}}</p>
-			        	</div>
-			        </li>
-		        {% endfor %}
+	        	<li>
+		        	<div class="receive-message">
+		        		<div class="username-message-display">
+		        			Welcome to Flack!
+		        			<div class="message-time"></div>
+		        		</div>
+		        		<p>Flack is an imitation of Slack built with Flask and created to learn about web development.</p>
+		        	</div>
+		        </li>
+		        <li>
+		        	<div class="my-message">
+		        		<div class="username-message-display">
+		        			How to use Flack:
+		        			<div class="message-time"></div>
+		        		</div>
+		        		<p>	Log in by just selecting a username.<br>
+		        			Create a channel or select a channel to start talking.<br>
+		        			Users who are in the same channel will see your messages. Have fun!</p>
+		        	</div>
+		        </li>
 	        </ul>
         	<div class="send-message-form">
 	        	<form id="sendMessage">
