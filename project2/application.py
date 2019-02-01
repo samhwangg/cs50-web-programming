@@ -9,12 +9,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
-channelList = ["List", "Of", "Channel", "Names"]
-
-@app.route("/", methods = ["GET", "POST"])
-def index():
-	
-	chatObject = {
+chatObject = {
 	"channelName":
 		[
 			{
@@ -30,80 +25,61 @@ def index():
 
 		]
 	}
-	chatObject["channelName2"] = [{
-			"Message":"messagetext21",
-			"Username":"usernametext21",
-			"Time":"Timetext21"
-			}]
+chatObject["channelName2"] = [{
+		"Message":"messagetext21",
+		"Username":"usernametext21",
+		"Time":"Timetext21"
+		}]
 
-	chatObject["channelName2"].append({
-			"Message":"messagetext22",
-			"Username":"usernametext22",
-			"Time":"Timetext22"
-			})
-	# create new channel
-	chatObject["channelName3"] = []
-	# append new message
-	chatObject["channelName3"].append({
-			"Message":"messagetext31",
-			"Username":"usernametext31",
-			"Time":"Timetext31"
-			})
+chatObject["channelName2"].append({
+		"Message":"messagetext22",
+		"Username":"usernametext22",
+		"Time":"Timetext22"
+		})
+# create new channel
+chatObject["channelName3"] = []
+# append new message
+chatObject["channelName3"].append({
+		"Message":"messagetext31",
+		"Username":"usernametext31",
+		"Time":"Timetext31"
+		})
 
-	return render_template("index.html", channelList=channelList, chatObject=chatObject)
+@app.route("/", methods = ["GET", "POST"])
+def index():
+	return render_template("index.html", chatObject=chatObject)
 
 @app.route("/addchannel", methods = ["POST"])
 def addChannel():
-	# Get data we created with "FormData()"
+	# Get data from FormData() object
 	newChannelName = request.form.get("newChannelInput")
-	channelList.append(newChannelName)
-	return json.dumps(channelList)
 
-@app.route("/testjson")
-def test():
-	testJson = {
-		"channelName":
-			[
-				{
-					"Message":"messagetext11",
-					"Username":"usernametext11",
-					"Time":"Timetext11"
-				},
-				{
-					"Message":"messagetext12",
-					"Username":"usernametext12",
-					"Time":"Timetext12"
-				}
+	# Create new channel
+	chatObject[newChannelName] = []
 
-			]
-		}
-	testJson["channelName2"] = [{
-			"Message":"messagetext21",
-			"Username":"usernametext21",
-			"Time":"Timetext21"
-			}]
-	for key in testJson:
-		for num in range(len(testJson[key])):
-			print(testJson[key][num])
+	return ('', 204)
 
-	testJson["channelName2"].append({
-			"Message":"messagetext22",
-			"Username":"usernametext22",
-			"Time":"Timetext22"
-			})
-	# create new channel
-	testJson["channelName3"] = []
-	# append new message
-	testJson["channelName3"].append({
-			"Message":"messagetext31",
-			"Username":"usernametext31",
-			"Time":"Timetext31"
-			})
+@app.route("/addmessage", methods = ["POST"])
+def addMessage():
+	# Get data from FormData() object
+	channel = request.form.get('channel')
+	username = request.form.get('username')
+	time = request.form.get('time')
+	message = request.form.get('message')
 
-	for num in range(len(testJson["channelName2"])):
-		print(testJson["channelName2"][num]["Message"])
+	# Append new message to channel
+	chatObject[channel].append({
+		"Message":message,
+		"Username":username,
+		"Time":time
+		})
 
-	return jsonify(testJson)
+	return ('', 204)
+
+
+@app.route("/changechannel", methods = ["POST"])
+def changeChannel():
+	return jsonify(chatObject)
 
 
 

@@ -33,19 +33,6 @@
 		</div>
         <div class="container">
         	<ul class="message-display" id="message-display-list">
-        		<!--
-		        {% for num in range(chatObject["channelName"]|length) %}
-		        	<li>
-			        	<div class="receive-message">
-			        		<div class="username-message-display">
-			        			{{ chatObject["channelName2"][num]["Username"] }}
-			        			<div class="message-time">{{chatObject["channelName2"][num]["Time"]}}</div>
-			        		</div>
-			        		<p>{{chatObject["channelName2"][num]["Message"]}}</p>
-			        	</div>
-			        </li>
-		        {% endfor %}
-		    	-->
 		        {% for num in range(chatObject["channelName"]|length) %}
 		        	<li>
 			        	<div class="my-message">
