@@ -49,16 +49,15 @@ chatObject["channelName3"].append({
 def index():
 	return render_template("index.html", chatObject=chatObject)
 
-@app.route("/addchannel", methods = ["POST"])
-def addChannel():
+@app.route("/checkchannel", methods = ["POST"])
+def checkChannel():
 	# Get data from FormData() object
 	newChannelName = request.form.get("newChannelInput")
 
+	# Check collision for new channel name
 	if newChannelName in chatObject:
+		print("collision")
 		return jsonify({"success": False})
-
-	# Create new channel
-	chatObject[newChannelName] = []
 
 	return jsonify({"success": True})
 
@@ -77,9 +76,10 @@ def addMessage():
 		"Time":time
 		})
 
-	print(len(chatObject[channel]))
+	# If >100 messages in a channel, delete the oldest message
 	if(len(chatObject[channel]) > 100):
 		chatObject[channel].pop(0)
+		emit("newChannel", jsonify(chatObject), broadcast=True)
 		return jsonify({"change": True})
 
 	return jsonify({"change": False})
@@ -87,12 +87,20 @@ def addMessage():
 
 @app.route("/changechannel", methods = ["POST"])
 def changeChannel():
+	# return chatObject JSON
 	return jsonify(chatObject)
 
 
+@socketio.on("submit channel")
+def emitNewChannel(data):
+	# Get channel name from input
+	channelName = data["channelName"]
 
+	# Create new channel
+	chatObject[channelName] = []
 
-
+	# Emit changes
+	emit("new channel", channelName, broadcast=True)
 
 
 

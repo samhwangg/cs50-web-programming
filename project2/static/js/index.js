@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+	// Connect to websocket
+    var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
 	// Username form disabled by default
 	document.querySelector('#submitUsername').disabled = true;
 	document.querySelector('#message-button').disabled = true;
@@ -95,55 +98,70 @@ document.addEventListener('DOMContentLoaded', () => {
 			channelSubmitInput.disabled = true;
 	};
 
-	// AJAX Request to create a new channel
-	document.querySelector('#create-channel').onsubmit = () => {
-		if(!localStorage.getItem('username')) {
-			alert("Please log in before creating a new channel.");
+	// Create new 'li' element for channel list when creating a new channel
+	function createNewChannel(newChannelName) {
+		var channelList = document.getElementById('sidenav-channel-list');
+        var newLi = document.createElement("li");
+        var newDiv= document.createElement("div");
+        newDiv.innerHTML = "# " + newChannelName;
+        newLi.setAttribute('id', newChannelName);
+        newLi.appendChild(newDiv);
+        channelList.appendChild(newLi);
+        loadChannelOnClick();
+        channelList.scrollTop = channelList.scrollHeight;
+	}
+
+	// When connected, configure websocket functions
+    socket.on('connect', () => {
+
+    	// Websocket for create channel
+    	document.querySelector('#create-channel').onsubmit = () => {
+			if(!localStorage.getItem('username')) {
+				alert("Please log in before creating a new channel.");
+				return false;
+			}
+
+			// Get new channel name from form
+	        const newChannelName = newChannelInput.value;
+
+	        // Create new AJAX request to /checkchannel
+			const request = new XMLHttpRequest();
+	        request.open('POST', '/checkchannel');
+
+	        // Callback funtion after request loads
+	        request.onload = () => {
+	        	const data = JSON.parse(request.responseText);
+	        	if(data.success) {
+		            // No collision. Emit channel change event.
+		            socket.emit('submit channel', {'channelName': newChannelName});
+
+		            // Close modal and cancel form submission
+					newChannelInput.value = '';
+					channelSubmitInput.disabled = true;
+					modal.style.display = "none";
+		        }
+		        else {
+		        	alert("Channel name taken. Please choose a different name.");
+		        	return false;
+		        }
+	        }
+
+	        // Create the "form" data and add data to send with request
+	        const data = new FormData();
+	        data.append('newChannelInput', newChannelName);
+
+	        // Send request
+	        request.send(data);
+
+	        // Cancel form submission
 			return false;
-		}
+		};
+    });
 
-		// Create new AJAX request to /addchannel
-		const request = new XMLHttpRequest();
-        const newChannelName = newChannelInput.value;
-        request.open('POST', '/addchannel');
-
-        // Callback function for when request completes
-        // Create new 'li' element for channel list
-        request.onload = () => {
-        	const data = JSON.parse(request.responseText);
-        	if(data.success) {
-	            var channelList = document.getElementById('sidenav-channel-list');
-	            var newLi = document.createElement("li");
-	            var newDiv= document.createElement("div");
-	            newDiv.innerHTML = "# " + newChannelName;
-	            newLi.setAttribute('id', newChannelName);
-	            newLi.appendChild(newDiv);
-	            channelList.appendChild(newLi);
-	            clearChannelBackground();
-	            loadChannelOnClick();
-	            changeChannel(newChannelName);  
-	            channelList.scrollTop = channelList.scrollHeight;
-
-	            // Close modal and cancel form submission
-				newChannelInput.value = '';
-				channelSubmitInput.disabled = true;
-				modal.style.display = "none";
-	        }
-	        else {
-	        	alert("Channel name taken. Please choose a different name.");
-	        	return false;
-	        }
-        }
-
-        // Create the "form" data and add data to send with request
-        const data = new FormData();
-        data.append('newChannelInput', newChannelName);
-
-        // Send request
-        request.send(data);
-
-		return false;
-	};
+    // New channel creation is announced. Create new channel.
+    socket.on('new channel', data => {
+    	createNewChannel(data);
+    });
 
 	// Disable/Enable Message Send Button
 	document.querySelector('#message-input').onkeyup = () => {
@@ -348,7 +366,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	}, false);
 
+	//socket.on('newChannel', data => {
+        // data contains chatobject JSON
+    //});
+
 });
+
+
+
+
+
+
+
 
 
 
