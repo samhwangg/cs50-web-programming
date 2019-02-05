@@ -4,6 +4,6 @@ My source code for projects as I follow HarvardX's CS50W course on web programmi
 
 ## Project List Completion Status :white_check_mark: :x:
 * Project 1 :white_check_mark:
-* Project 2 :x:
+* Project 2 :white_check_mark:
 * Project 3 :x:
 * Final Project :x:
