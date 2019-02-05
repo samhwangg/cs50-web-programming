@@ -112,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	// When connected, configure websocket functions
-	// TODO: Only user creating the channel changes channel
     socket.on('connect', () => {
     	// Websocket for create channel
     	document.querySelector('#create-channel').onsubmit = () => {
@@ -133,7 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
 	        	const data = JSON.parse(request.responseText);
 	        	if(data.success) {
 		            // No collision. Emit channel change event.
-		            socket.emit('submit channel', {'channelName': newChannelName});
+		            socket.emit('submit channel', {
+		            	'channelName': newChannelName,
+		            	'username': localStorage.getItem('username')
+		            });	
 
 		            // Close modal and cancel form submission
 					newChannelInput.value = '';
@@ -160,7 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // New channel creation is announced. Create new channel.
     socket.on('new channel', data => {
-    	createNewChannel(data);
+    	createNewChannel(data.channelName);
+    	// only the user who created the channel will change to new channel
+    	if(data.username === localStorage.getItem('username'))
+    		changeChannel(data.channelName);
     });
 
 	// Disable/Enable Message Send Button
@@ -384,10 +389,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // load channel onClick functions once page is finished loading
 	window.addEventListener("DOMContentLoaded", loadChannelOnClick(), false);
+
+	// check if channel exists before loading
 	window.addEventListener("DOMContentLoaded", function() {
-		if(localStorage.getItem('currChannel')) {
-			changeChannel(localStorage.getItem('currChannel'))
-		}
+		// Create new AJAX request to /checkchannel
+		const request = new XMLHttpRequest();
+        request.open('POST', '/checkchannel');
+
+        // Load if channel exists, clear localStorage if not
+        request.onload = () => {
+        	const data = JSON.parse(request.responseText);
+        	if(data.success) {
+	            // Return true means channel does not exist
+	            localStorage.removeItem('currChannel');
+	        }
+	        else {
+	        	// Return false means channel does exist
+				changeChannel(localStorage.getItem('currChannel'))
+	        }
+        }
+
+        // Create the "form" data and add data to send with request
+        const data = new FormData();
+        data.append('newChannelInput', localStorage.getItem('currChannel'));
+
+        // Send request
+        request.send(data);
 
 	}, false);
 

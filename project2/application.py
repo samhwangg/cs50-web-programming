@@ -9,41 +9,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
-chatObject = {
-	"channelName":
-		[
-			{
-				"Message":"messagetext11",
-				"Username":"usernametext11",
-				"Time":"Timetext11"
-			},
-			{
-				"Message":"messagetext12",
-				"Username":"usernametext12",
-				"Time":"Timetext12"
-			}
-
-		]
-	}
-chatObject["channelName2"] = [{
-		"Message":"messagetext21",
-		"Username":"usernametext21",
-		"Time":"Timetext21"
-		}]
-
-chatObject["channelName2"].append({
-		"Message":"messagetext22",
-		"Username":"usernametext22",
-		"Time":"Timetext22"
-		})
-# create new channel
-chatObject["channelName3"] = []
-# append new message
-chatObject["channelName3"].append({
-		"Message":"messagetext31",
-		"Username":"usernametext31",
-		"Time":"Timetext31"
-		})
+chatObject = {}
 
 @app.route("/", methods = ["GET", "POST"])
 def index():
@@ -88,7 +54,7 @@ def emitNewChannel(data):
 	chatObject[channelName] = []
 
 	# Emit changes. Return channel name.
-	emit("new channel", channelName, broadcast=True)
+	emit("new channel", data, broadcast=True)
 
 @socketio.on("submit message")
 def emitNewMessage(data):
