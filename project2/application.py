@@ -113,5 +113,7 @@ def emitNewMessage(data):
 	# Emit changes. Return message object.
 	emit("new message", newMessage, broadcast=True)
 
-
-
+@socketio.on("submit typing")
+def emitTyping(data):
+	#Emit username typing
+	emit("new typing", data, broadcast=True)

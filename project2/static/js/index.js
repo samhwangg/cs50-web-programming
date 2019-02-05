@@ -114,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	// When connected, configure websocket functions
 	// TODO: Only user creating the channel changes channel
     socket.on('connect', () => {
-
     	// Websocket for create channel
     	document.querySelector('#create-channel').onsubmit = () => {
 			if(!localStorage.getItem('username')) {
@@ -179,29 +178,40 @@ document.addEventListener('DOMContentLoaded', () => {
 	var clearInterval = 900;
 	var clearTimerId;
 
-	// Typing Indicator
-	document.querySelector('#message-input').onkeydown = (event) => {
-		// Don't indicate typing when user is not logged in
-		if(!localStorage.getItem('username'))
-			return;
-		// Don't indicate typing when user presses 'Enter'
-		if(event.keyCode === 13)
-			return;
-		if(canPublish) {
-			isTyping.innerHTML = localStorage.getItem('username') + " is typing...";
-			canPublish = false;
-			setTimeout(function() {
-				canPublish = true;
-			}, throttleTime);
+	socket.on('connect', () => {
+    	// Typing Indicator
+		document.querySelector('#message-input').onkeydown = (event) => {
+			// Don't indicate typing when user is not logged in
+			if(!localStorage.getItem('username'))
+				return;
+			// Don't indicate typing when user presses 'Enter'
+			if(event.keyCode === 13)
+				return;
+			if(canPublish) {
+				socket.emit('submit typing', {
+					'username': localStorage.getItem('username'),
+					'channel': localStorage.getItem('currChannel')
+				});
+				canPublish = false;
+				setTimeout(function() {
+					canPublish = true;
+				}, throttleTime);
+			}
+		};
+    });
 
-			//restart timeout timer
+	socket.on('new typing', data => {
+		// if username is not the same and on the same channel, indicate typing
+		if(data.username != localStorage.getItem('username') && data.channel === localStorage.getItem('currChannel')) {
+			isTyping.innerHTML = data.username + " is typing...";
+			// restart timeout timer
 		    clearTimeout(clearTimerId);
 		    clearTimerId = setTimeout(function () {
-		      //clear user is typing message
+		      // clear 'user is typing message'
 		      isTyping.innerHTML = '';
 		    }, clearInterval);
 		}
-	};
+	});
 
 	var channelListTag = document.getElementById('sidenav-channel-list').getElementsByTagName('li');
 
@@ -311,59 +321,68 @@ document.addEventListener('DOMContentLoaded', () => {
 		messageList.scrollTop = messageList.scrollHeight;
 	}
 
-	// Call createMessage when user submits a message
-	document.querySelector('#sendMessage').onsubmit = () => {
-		// don't allow message sending if user is not logged in/selected a channel
-		if(!localStorage.getItem('username')) {
-			alert("Please log in before sending a message.");
+	// When connected, configure websocket functions
+	socket.on('connect', () => {
+		// Call createMessage when user submits a message
+		document.querySelector('#sendMessage').onsubmit = () => {
+			// don't allow message sending if user is not logged in/selected a channel
+			if(!localStorage.getItem('username')) {
+				alert("Please log in before sending a message.");
+				return false;
+			}
+			if(!localStorage.getItem('currChannel')) {
+				alert("Please select a channel before sending a message");
+				return false;
+			}
+
+			// get message content and timestamp
+			var messageInput = document.getElementById('message-input');
+			var messageContent = messageInput.value;
+			var currTime = getTime();
+
+			// AJAX request to check if message count >100
+			// Create new AJAX request to /checkmessage
+			const request = new XMLHttpRequest();
+	        request.open('POST', '/checkmessage');
+
+	        // check if return JSON indicates messages <100
+	        request.onload = () => {
+	        	const data = JSON.parse(request.responseText);
+	        	if(data.change) {
+	        		socket.emit('submit message', {
+	        			'channel':localStorage.getItem('currChannel'),
+	        			'username': localStorage.getItem('username'),
+	        			'time':currTime,
+	        			'message':messageContent
+	        		});
+	        		//changeChannel(localStorage.getItem('currChannel'));
+	        	}
+	        	else {
+	        		alert("Too many messages. Please try again later.");
+	        		return false;
+	        	}
+	        }
+
+	        // Create form data to send with AJAX
+	        const data = new FormData();
+	        data.append('channel', localStorage.getItem('currChannel'));
+
+	        // Send request
+	        request.send(data);
+
+			// clear field and stop form from submitting
+			messageInput.value = '';
 			return false;
-		}
-		if(!localStorage.getItem('currChannel')) {
-			alert("Please select a channel before sending a message");
-			return false;
-		}
+		};
+	});
 
-		// get message content and timestamp
-		var messageInput = document.getElementById('message-input');
-		var messageContent = messageInput.value;
-		var currTime = getTime();
+	// New message creation is announced. Create new message if on same channel.
+    socket.on('new message', data => {
+    	if(localStorage.getItem('currChannel') === data.Channel)
+    		createMessage(data.Username, data.Time, data.Message);
+    });
 
-		// AJAX request to check if message count >100
-		// Create new AJAX request to /checkmessage
-		const request = new XMLHttpRequest();
-        request.open('POST', '/checkmessage');
-
-        // check if return JSON indicates messages <100
-        request.onload = () => {
-        	const data = JSON.parse(request.responseText);
-        	if(data.change) {
-        		socket.emit('submit message', {
-        			'channel':localStorage.getItem('currChannel'),
-        			'username': localStorage.getItem('username'),
-        			'time':currTime,
-        			'message':messageContent
-        		});
-        		//changeChannel(localStorage.getItem('currChannel'));
-        	}
-        	else {
-        		alert("Too many messages. Please try again later.");
-        		return false;
-        	}
-        }
-
-        // Create form data to send with AJAX
-        const data = new FormData();
-        data.append('channel', localStorage.getItem('currChannel'));
-
-        // Send request
-        request.send(data);
-
-		// clear field and stop form from submitting
-		messageInput.value = '';
-		return false;
-	};
-
-	// load channel onClick functions once page is finished loading
+    // load channel onClick functions once page is finished loading
 	window.addEventListener("DOMContentLoaded", loadChannelOnClick(), false);
 	window.addEventListener("DOMContentLoaded", function() {
 		if(localStorage.getItem('currChannel')) {
@@ -371,11 +390,5 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 	}, false);
-
-	// New message creation is announced. Create new message if on same channel.
-    socket.on('new message', data => {
-    	if(localStorage.getItem('currChannel') === data.Channel)
-    		createMessage(data.Username, data.Time, data.Message);
-    });
 
 });
