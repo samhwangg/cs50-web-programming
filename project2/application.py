@@ -61,33 +61,21 @@ def checkChannel():
 
 	return jsonify({"success": True})
 
-@app.route("/addmessage", methods = ["POST"])
-def addMessage():
-	# Get data from FormData() object
+@app.route("/checkmessage", methods = ["POST"])
+def checkMessage():
+	# Get channel name to check message count
 	channel = request.form.get('channel')
-	username = request.form.get('username')
-	time = request.form.get('time')
-	message = request.form.get('message')
-
-	# Append new message to channel
-	chatObject[channel].append({
-		"Message":message,
-		"Username":username,
-		"Time":time
-		})
 
 	# If >100 messages in a channel, delete the oldest message
 	if(len(chatObject[channel]) > 100):
 		chatObject[channel].pop(0)
-		emit("newChannel", jsonify(chatObject), broadcast=True)
-		return jsonify({"change": True})
 
-	return jsonify({"change": False})
+	return jsonify({"change": True})
 
 
 @app.route("/changechannel", methods = ["POST"])
 def changeChannel():
-	# return chatObject JSON
+	# Return chatObject JSON
 	return jsonify(chatObject)
 
 
@@ -99,8 +87,31 @@ def emitNewChannel(data):
 	# Create new channel
 	chatObject[channelName] = []
 
-	# Emit changes
+	# Emit changes. Return channel name.
 	emit("new channel", channelName, broadcast=True)
+
+@socketio.on("submit message")
+def emitNewMessage(data):
+	# Get info from input
+	channel = data['channel']
+	username = data['username']
+	time = data['time']
+	message = data['message']
+
+	#Create new message object
+	newMessage = {
+		"Message":message,
+		"Username":username,
+		"Time":time
+	}
+
+	# Append new message to channel
+	chatObject[channel].append(newMessage)
+
+	newMessage["Channel"] = channel;
+
+	# Emit changes. Return message object.
+	emit("new message", newMessage, broadcast=True)
 
 
 

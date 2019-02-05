@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	// When connected, configure websocket functions
+	// TODO: Only user creating the channel changes channel
     socket.on('connect', () => {
 
     	// Websocket for create channel
@@ -276,8 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Create new message and add to list
 	function createMessage(username, time, messageContent) {
-		// add parameters later
-
 		// create elements of message block
 		var messageList = document.getElementById('message-display-list');
 		var newLi = document.createElement("li");
@@ -314,46 +313,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Call createMessage when user submits a message
 	document.querySelector('#sendMessage').onsubmit = () => {
-		// don't allow message sending if user is not logged in
+		// don't allow message sending if user is not logged in/selected a channel
 		if(!localStorage.getItem('username')) {
 			alert("Please log in before sending a message.");
 			return false;
 		}
-
 		if(!localStorage.getItem('currChannel')) {
 			alert("Please select a channel before sending a message");
 			return false;
 		}
 
-		// call createMessage function to append to message list (frontend)
-		var messageContent = document.getElementById('message-input');
+		// get message content and timestamp
+		var messageInput = document.getElementById('message-input');
+		var messageContent = messageInput.value;
 		var currTime = getTime();
-		createMessage(localStorage.getItem('username'), currTime, messageContent.value);
 
-		// AJAX request to append to JSON object (backend)
-		// Create new AJAX request to /addmessage
+		// AJAX request to check if message count >100
+		// Create new AJAX request to /checkmessage
 		const request = new XMLHttpRequest();
-        request.open('POST', '/addmessage');
+        request.open('POST', '/checkmessage');
 
-        // check if return JSON indicates change in message (>100)
+        // check if return JSON indicates messages <100
         request.onload = () => {
         	const data = JSON.parse(request.responseText);
-        	if(data.change)
-        		changeChannel(localStorage.getItem('currChannel'));
+        	if(data.change) {
+        		socket.emit('submit message', {
+        			'channel':localStorage.getItem('currChannel'),
+        			'username': localStorage.getItem('username'),
+        			'time':currTime,
+        			'message':messageContent
+        		});
+        		//changeChannel(localStorage.getItem('currChannel'));
+        	}
+        	else {
+        		alert("Too many messages. Please try again later.");
+        		return false;
+        	}
         }
 
         // Create form data to send with AJAX
         const data = new FormData();
         data.append('channel', localStorage.getItem('currChannel'));
-        data.append('username', localStorage.getItem('username'));
-        data.append('time', currTime);
-        data.append('message', messageContent.value);
 
         // Send request
         request.send(data);
 
 		// clear field and stop form from submitting
-		messageContent.value = '';
+		messageInput.value = '';
 		return false;
 	};
 
@@ -366,19 +372,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	}, false);
 
-	//socket.on('newChannel', data => {
-        // data contains chatobject JSON
-    //});
+	// New message creation is announced. Create new message if on same channel.
+    socket.on('new message', data => {
+    	if(localStorage.getItem('currChannel') === data.Channel)
+    		createMessage(data.Username, data.Time, data.Message);
+    });
 
 });
-
-
-
-
-
-
-
-
-
-
-
