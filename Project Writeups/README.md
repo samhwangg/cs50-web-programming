@@ -15,7 +15,7 @@ Project 1's goal was to build a book review website where users are able to crea
 * __[styles](../project1/static/styles/)__: CSS code to style the book page. Primarily used to display the stars for the rating feature.
 * __[js](../project1/static/js/)__: Simple JavaScript code to prevent the user from submitting any empty forms.
 
-![Project 1 bookPage.html Screenshot](/images/project1.png)
+![Project 1 bookPage.html Screenshot](/images/project1.png?raw=true)
 
 ## Project 2 - Flack
 Project 2's goal was to build a single page messenger application similar to Slack. Users are able to create a username, create different channels, and send messages all without reloading the webpage. This project allowed me to get familiar with JavaScript and introduced me to web sockets.
@@ -25,4 +25,4 @@ Project 2's goal was to build a single page messenger application similar to Sla
 * __[index.css](../project2/static/styles/index.css)__: CSS code to style Flack.
 * __[index.js](../project2/static/js/index.js)__: JavaScript code to handle all the client side code including processing forms, making AJAX requests, emitting web sockets, and dynamically changing the HTML/CSS layout when new channels/messages appear.
 
-![Project 2 index.html Screenshot](/images/project2.png)
+![Project 2 index.html Screenshot](/images/project2.png?raw=true)
