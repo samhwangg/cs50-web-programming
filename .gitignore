@@ -14,3 +14,4 @@ flask_session
 .DS_Store
 **/.DS_Store
 requirements.txt
+migrations
