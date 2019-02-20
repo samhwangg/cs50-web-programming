@@ -1,0 +1,29 @@
+{% extends 'orders/layout.html' %}
+{% load static %}
+
+{% block title %}
+	Bear Canyon Pizza Menu
+{% endblock %}
+
+{% block body %}
+	<h2>Appetizers</h2>
+	<ul>
+		{% for app in appetizers %}
+			{% if app.description %}
+				<li><b>{{ app.name }}</b> - {{ app.description }}</li>
+			{% else %}
+				<li><b>{{ app.name }}</b></li>
+			{% endif %}
+		{% endfor %}
+	</ul>
+	<h2>Specialty Pizza</h2>
+	<ul id="food-list">
+		{% for pizza in specialtyPizza %}
+			<li><b>{{ pizza.name }}</b> - {{ pizza.description }}</li>
+		{% endfor %}
+	</ul>
+{% endblock %}
+
+{% block javascript %}
+	<script src="{% static 'orders/js/menu.js' %}"></script>
+{% endblock %}

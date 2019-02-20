@@ -1,0 +1,36 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title %}{% endblock %}</title>
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+	{% block moreCSS %}{% endblock %}
+    
+</head>
+<body>
+	<nav class="navbar navbar-default navbar-fixed-top">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+	      <a class="navbar-brand" href="{% url 'index' %}">Bear Canyon Pizza</a>
+	    </div>
+	    <ul id="navbar-list" class="nav navbar-nav">
+	      <li id="home-nav"><a href="{% url 'index' %}">Home</a></li>
+	      <li id="menu-nav"><a href="{% url 'menu' %}">Food Menu</a></li>
+	      <li id="beer-nav"><a href="{% url 'beer' %}">Beer List</a></li>
+	      <li id="events-nav"><a href="">Events</a></li>
+	      <li id="gallery-nav"><a href="">Gallery</a></li>
+	      <li id="contact-nav"><a href="">Contact</a></li>
+	      <li id="order-nav"><a href="{% url 'order' %}">Order Here</a></li>
+	    </ul>
+	  </div>
+	</nav>
+	<div class="container" style="margin-top: 50px">
+		{% block body %}
+		{% endblock %}
+	</div>
+	<script src="{% static 'orders/js/layout.js' %}"></script>
+	{% block javascript %}{% endblock %}
+</body>
+</html>
